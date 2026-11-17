@@ -39,6 +39,10 @@ function range(start: string | null, end: string | null, current = false): strin
   return [year(start), current ? "Présent" : year(end)].filter(Boolean).join(" – ");
 }
 
+function dateSeparator(value: string): string {
+  return value ? " :\u00a0\u00a0" : "";
+}
+
 function SidebarSection({ title, color, children }: { title: string; color: string; children: ReactNode }) {
   return <View style={styles.sidebarSection}><Text style={[styles.sidebarHeading, { color }]}>{title}</Text>{children}</View>;
 }
@@ -80,10 +84,10 @@ export default function ModernCv({ profile, settings }: Props): ReactElement<Doc
   };
   const mainContent: Record<CvSection, ReactNode> = {
     summary: <Text>{profile.summary}</Text>,
-    experiences: <>{profile.experiences.map((item, index) => <View key={`${item.position}-${index}`} style={styles.item} wrap={false}><Text style={styles.date}>{range(item.startDate, item.endDate, item.current)}{item.startDate ? " : " : ""}<Text style={styles.itemTitle}>{item.position || item.company}</Text>{item.position && item.company ? `, ${item.company}` : ""}</Text>{item.description ? <Text>{item.description}</Text> : null}{item.bullets.map((bullet, bulletIndex) => <View key={`${bulletIndex}-${bullet}`} style={styles.bullet}><Text style={styles.bulletMark}>•</Text><Text style={styles.bulletText}>{bullet}</Text></View>)}</View>)}</>,
-    education: <>{profile.education.map((item, index) => <View key={`${item.degree}-${index}`} style={styles.item} wrap={false}><Text style={styles.date}>{range(item.startDate, item.endDate, item.current)}{item.startDate ? " : " : ""}<Text style={styles.itemTitle}>{[item.degree, item.field].filter(Boolean).join(" — ") || item.institution}</Text>{item.degree && item.institution ? `, ${item.institution}` : ""}</Text>{item.description ? <Text>{item.description}</Text> : null}</View>)}</>,
+    experiences: <>{profile.experiences.map((item, index) => <View key={`${item.position}-${index}`} style={styles.item} wrap={false}><Text style={styles.date}>{range(item.startDate, item.endDate, item.current)}{dateSeparator(item.startDate ?? "")}<Text style={styles.itemTitle}>{item.position || item.company}</Text>{item.position && item.company ? `, ${item.company}` : ""}</Text>{item.description ? <Text>{item.description}</Text> : null}{item.bullets.map((bullet, bulletIndex) => <View key={`${bulletIndex}-${bullet}`} style={styles.bullet}><Text style={styles.bulletMark}>•</Text><Text style={styles.bulletText}>{bullet}</Text></View>)}</View>)}</>,
+    education: <>{profile.education.map((item, index) => <View key={`${item.degree}-${index}`} style={styles.item} wrap={false}><Text style={styles.date}>{range(item.startDate, item.endDate, item.current)}{dateSeparator(item.startDate ?? "")}<Text style={styles.itemTitle}>{[item.degree, item.field].filter(Boolean).join(" — ") || item.institution}</Text>{item.degree && item.institution ? `, ${item.institution}` : ""}</Text>{item.description ? <Text>{item.description}</Text> : null}</View>)}</>,
     projects: <>{profile.projects.map((item, index) => <View key={`${item.name}-${index}`} style={styles.item} wrap={false}><Text style={styles.itemTitle}>{item.name}</Text>{item.description ? <Text>{item.description}</Text> : null}{item.url ? <Text style={styles.subline}>{item.url}</Text> : null}</View>)}</>,
-    certifications: <>{profile.certifications.map((item, index) => <View key={`${item.name}-${index}`} style={styles.item} wrap={false}><Text style={styles.date}>{year(item.issueDate)}{item.issueDate ? " : " : ""}<Text style={styles.itemTitle}>{item.name}</Text>{item.issuer ? `, ${item.issuer}` : ""}</Text></View>)}</>,
+    certifications: <>{profile.certifications.map((item, index) => <View key={`${item.name}-${index}`} style={styles.item} wrap={false}><Text style={styles.date}>{year(item.issueDate)}{dateSeparator(item.issueDate ?? "")}<Text style={styles.itemTitle}>{item.name}</Text>{item.issuer ? `, ${item.issuer}` : ""}</Text></View>)}</>,
     identity: null, skills: null, languages: null, interests: null,
   };
 
