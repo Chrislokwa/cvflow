@@ -13,6 +13,7 @@ const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 const profileFields = [
   "firstName",
   "lastName",
+  "postName",
   "title",
   "email",
   "phone",
@@ -296,6 +297,11 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
               {errors.lastName && (
                 <FieldMessage>{errors.lastName.message}</FieldMessage>
               )}
+            </div>
+            <div>
+              <label htmlFor="postName" className="text-sm font-medium text-[#303a32]">Post-nom <span className="font-normal text-[#858d85]">(facultatif)</span></label>
+              <input {...register("postName")} id="postName" autoComplete="additional-name" className={inputClassName} aria-invalid={Boolean(errors.postName)} />
+              {errors.postName && <FieldMessage>{errors.postName.message}</FieldMessage>}
             </div>
             <div className="sm:col-span-2">
               <label

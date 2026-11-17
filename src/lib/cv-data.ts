@@ -5,6 +5,7 @@ export const defaultCvSettings = { accentColor: "#2869a7" } as const;
 export type CvProfileData = {
   firstName: string;
   lastName: string;
+  postName: string;
   title: string;
   email: string;
   phone: string;
@@ -55,7 +56,7 @@ export async function loadCvProfile(userId: string): Promise<CvProfileData | nul
   if (!profile) return null;
 
   return {
-    firstName: profile.firstName, lastName: profile.lastName, title: profile.title,
+    firstName: profile.firstName, lastName: profile.lastName, postName: profile.postName, title: profile.title,
     email: profile.email, phone: profile.phone, address: profile.address, city: profile.city, country: profile.country,
     birthDate: dateValue(profile.birthDate), maritalStatus: profile.maritalStatus, gender: profile.gender,
     nationality: profile.nationality, website: profile.website, linkedin: profile.linkedin, otherLink: profile.otherLink,

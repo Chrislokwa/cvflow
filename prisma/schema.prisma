@@ -41,6 +41,7 @@ model Profile {
   userId         String          @unique
   firstName      String          @default("")
   lastName       String          @default("")
+  postName       String          @default("")
   title          String          @default("")
   email          String          @default("")
   phone          String          @default("")

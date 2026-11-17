@@ -53,6 +53,7 @@ export const profileSchema = z.object({
     .trim()
     .min(1, "Saisissez votre nom.")
     .max(80, "Le nom ne peut pas dépasser 80 caractères."),
+  postName: z.string().trim().max(80, "Le post-nom ne peut pas dépasser 80 caractères."),
   title: z
     .string()
     .trim()

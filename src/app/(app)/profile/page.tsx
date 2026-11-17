@@ -58,6 +58,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   const initialValues: ProfileInput = {
     firstName: profileDetails?.firstName ?? "",
     lastName: profileDetails?.lastName ?? "",
+    postName: profileDetails?.postName ?? "",
     title: profileDetails?.title ?? "",
     email: profileDetails?.email || session.user.email || "",
     phone: profileDetails?.phone ?? "",

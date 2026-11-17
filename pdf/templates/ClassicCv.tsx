@@ -8,10 +8,8 @@ type Props = { profile: CvProfileData; settings: ClassicCvSettings };
 
 const styles = StyleSheet.create({
   page: { paddingTop: 40, paddingBottom: 40, paddingHorizontal: 48, fontFamily: "Roboto", fontSize: 9, color: "#252525", lineHeight: 1.4 },
-  header: { flexDirection: "row", alignItems: "center", marginBottom: 16, gap: 18 },
-  headerText: { flexGrow: 1, flexShrink: 1 },
-  name: { fontFamily: "Lora", fontSize: 24, lineHeight: 1.15, color: "#171717" },
-  title: { marginTop: 4, fontSize: 11, color: "#454545" },
+  identityContent: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
+  identityDetails: { flexGrow: 1, flexShrink: 1 },
   photo: { width: 76, height: 76, borderRadius: 3, objectFit: "cover" },
   section: { marginTop: 13 },
   sectionHeading: { flexDirection: "row", alignItems: "center", gap: 13, paddingBottom: 4, borderBottomWidth: 1 },
@@ -82,12 +80,11 @@ function IdentityRow({ label, value }: { label: string; value: string }) {
 }
 
 export default function ClassicCv({ profile, settings }: Props): ReactElement<DocumentProps> {
-  const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(" ") || "Votre nom";
+  const fullName = [profile.firstName, profile.postName, profile.lastName].filter(Boolean).join(" ") || "CVFlow";
   const experiences = profile.experiences.filter((item) => item.position || item.company || item.description || item.bullets.length);
   const education = profile.education.filter((item) => item.degree || item.institution || item.description);
-  const hasIdentityDetails = Boolean(profile.address || profile.birthDate || profile.maritalStatus || profile.gender || profile.nationality || profile.phone || profile.email || profile.city || profile.country || profile.website || profile.linkedin || profile.otherLink);
   const sectionTitles = [
-    hasIdentityDetails ? "Identité" : "",
+    "Identité",
     profile.summary.trim() ? "Profil professionnel" : "",
     education.length ? "Études et formations" : "",
     experiences.length ? "Expériences professionnelles" : "",
@@ -107,28 +104,27 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
   return (
     <Document title={`CV ${fullName}`} author={fullName}>
       <Page size="A4" style={styles.page} wrap>
-        <View style={styles.header}>
-          <View style={styles.headerText}>
-            <Text style={styles.name}>{fullName}</Text>
-            {profile.title ? <Text style={styles.title}>{profile.title}</Text> : null}
+        <Section title="Identité" number={numberFor("Identité")} accentColor={settings.accentColor}>
+          <View style={styles.identityContent}>
+            <View style={styles.identityDetails}>
+              <IdentityRow label="Nom" value={profile.lastName} />
+              <IdentityRow label="Post-nom" value={profile.postName} />
+              <IdentityRow label="Prénom" value={profile.firstName} />
+              <IdentityRow label="Profession" value={profile.title} />
+              <IdentityRow label="Adresse" value={profile.address} />
+              <IdentityRow label="Ville et pays" value={[profile.city, profile.country].filter(Boolean).join(", ")} />
+              <IdentityRow label="Date de naissance" value={formatBirthDate(profile.birthDate)} />
+              <IdentityRow label="État civil" value={profile.maritalStatus} />
+              <IdentityRow label="Sexe ou genre" value={profile.gender} />
+              <IdentityRow label="Nationalité" value={profile.nationality} />
+              <IdentityRow label="Téléphone" value={profile.phone} />
+              <IdentityRow label="E-mail" value={profile.email} />
+              {linkRows.map((row) => <IdentityRow key={row.label} label={row.label} value={row.value} />)}
+            </View>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            {profile.photo.startsWith("data:image/") ? <Image src={profile.photo} style={styles.photo} /> : null}
           </View>
-          {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          {profile.photo.startsWith("data:image/") ? <Image src={profile.photo} style={styles.photo} /> : null}
-        </View>
-
-        {hasIdentityDetails ? (
-          <Section title="Identité" number={numberFor("Identité")} accentColor={settings.accentColor}>
-            <IdentityRow label="Adresse" value={profile.address} />
-            <IdentityRow label="Ville et pays" value={[profile.city, profile.country].filter(Boolean).join(", ")} />
-            <IdentityRow label="Date de naissance" value={formatBirthDate(profile.birthDate)} />
-            <IdentityRow label="État civil" value={profile.maritalStatus} />
-            <IdentityRow label="Sexe ou genre" value={profile.gender} />
-            <IdentityRow label="Nationalité" value={profile.nationality} />
-            <IdentityRow label="Téléphone" value={profile.phone} />
-            <IdentityRow label="E-mail" value={profile.email} />
-            {linkRows.map((row) => <IdentityRow key={row.label} label={row.label} value={row.value} />)}
-          </Section>
-        ) : null}
+        </Section>
 
         {profile.summary.trim() ? <Section title="Profil professionnel" number={numberFor("Profil professionnel")} accentColor={settings.accentColor}><Text style={styles.paragraph}>{profile.summary}</Text></Section> : null}
 
