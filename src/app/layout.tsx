@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "CVFlow — Votre prochain chapitre", template: "%s | CVFlow" },
-  description: "Créez un CV et une lettre de motivation qui vous ressemblent.",
+  title: {
+    default: "CVFlow — Créateur de CV et lettres de motivation en ligne",
+    template: "%s | CVFlow",
+  },
+  description:
+    "Créez, personnalisez et téléchargez gratuitement vos CV et lettres de motivation en PDF avec CVFlow.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
