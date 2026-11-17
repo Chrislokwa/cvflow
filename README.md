@@ -2,7 +2,7 @@
 
 CVFlow est une application web de création de CV et de lettres de motivation. Son objectif est d’aider chaque personne à organiser son parcours, préparer des candidatures adaptées et exporter des documents professionnels.
 
-> **État du projet :** le socle technique, l’authentification et les sections du profil sont en place. Le tableau de bord, Mes CV et Mes lettres restent provisoires. L’édition des documents et la génération PDF restent à implémenter.
+> **État du projet :** le socle technique, l’authentification, les sections du profil et le premier modèle de CV avec aperçu et export PDF sont disponibles. La gestion complète de plusieurs CV et les lettres restent à implémenter.
 
 ## Sommaire
 
@@ -32,6 +32,8 @@ Les fonctionnalités déjà disponibles :
 - Gestion des formations, expériences, compétences, langues, projets, certifications et centres d’intérêt.
 - Réorganisation des éléments du profil et confirmation avant suppression.
 - Vérification côté serveur de la propriété du profil et des éléments associés.
+- Aperçu A4 du modèle classique à partir du profil connecté.
+- Téléchargement PDF protégé, avec les polices Roboto et Lora embarquées localement.
 
 Les fonctionnalités prévues :
 
@@ -39,7 +41,7 @@ Les fonctionnalités prévues :
 - Profil réutilisable contenant les coordonnées, le résumé, les expériences, les formations, les compétences, les langues, les projets, les certifications et les centres d’intérêt.
 - Création et modification de plusieurs CV par utilisateur.
 - Choix de modèles de CV et réglages de présentation.
-- Prévisualisation et export des CV en PDF.
+- Gestion complète de plusieurs CV, modification, suppression et réglages de présentation.
 - Création de lettres de motivation avec type de candidature, ton, entreprise, poste et destinataire.
 - Prévisualisation et export des lettres de motivation en PDF.
 - Validation Zod des formulaires d’authentification côté interface et serveur.
@@ -56,8 +58,9 @@ Les fonctionnalités prévues :
 - **Auth.js v5** avec Credentials et sessions JWT
 - **bcryptjs**, **Zod** et **React Hook Form** pour l’authentification et ses formulaires
 - **ESLint** et **Prettier**
+- **@react-pdf/renderer** pour l’aperçu et l’export PDF
 
-`@react-pdf/renderer` sera ajouté lors de l’implémentation des exports PDF.
+Les polices Roboto et Lora sont fournies depuis `public/fonts` avec leurs licences SIL Open Font License. Aucune police n’est chargée depuis un service externe à l’exécution.
 
 ## Prérequis
 
@@ -164,17 +167,23 @@ src/
     (app)/          Espace connecté et pages provisoires
     actions/        Actions serveur d’authentification
     api/auth/       Gestionnaire de routes Auth.js
+    api/cv-preview/ Export PDF privé du CV courant
+  components/cv/    Aperçu PDF côté navigateur
   auth.ts           Configuration Auth.js et Credentials
   proxy.ts          Redirections optimistes des routes
   lib/
     prisma.ts       Singleton Prisma
     validations/    Schémas Zod
+pdf/
+  fonts.ts          Enregistrement des polices PDF locales
+  templates/        Modèles de documents PDF
+public/fonts/       Fichiers de polices et licences
 .env.example       Exemple de configuration locale
 ```
 
 ## Sécurité et données
 
-Les données personnelles et les documents stockés dans CVFlow sont privés. Les pages privées vérifient la session côté serveur et le proxy Next.js effectue les redirections d’accès. Toute future lecture ou mutation devra vérifier côté serveur que la ressource appartient à l’utilisateur authentifié ; masquer une ressource uniquement dans l’interface ne suffit pas. Les mots de passe sont stockés sous forme de hachage bcrypt. Les secrets et identifiants de base de données doivent rester dans `.env` ou dans le gestionnaire de secrets de l’environnement de déploiement.
+Les données personnelles et les documents stockés dans CVFlow sont privés. Les pages privées vérifient la session côté serveur et le proxy Next.js effectue les redirections d’accès. L’export PDF vérifie la session, puis charge le profil par l’identifiant de l’utilisateur authentifié. Toute lecture ou mutation future devra vérifier côté serveur que la ressource appartient à l’utilisateur ; masquer une ressource dans l’interface ne suffit pas. Les mots de passe sont stockés sous forme de hachage bcrypt. Les secrets et identifiants de base de données doivent rester dans `.env` ou dans le gestionnaire de secrets de l’environnement de déploiement.
 
 Le fichier `.env` est ignoré par Git. `.env.example` ne contient que des valeurs fictives.
 
@@ -185,10 +194,10 @@ Les étapes prévues, dans l’ordre général, sont :
 1. **Socle et base de données** — projet Next.js, design initial, schéma Prisma et migration de départ. _(Réalisé.)_
 2. **Authentification** — inscription, connexion et déconnexion avec Auth.js Credentials, mots de passe hachés et sessions JWT. _(Réalisé.)_
 3. **Profil professionnel** — identité, éléments de parcours et centres d’intérêt. _(Réalisé.)_
-4. **Gestion des CV** — création, édition, suppression, choix de modèle et réglages.
-5. **Génération des PDF** — prévisualisation et téléchargement des CV.
-6. **Lettres de motivation** — création, édition, organisation et export PDF.
-7. **Finitions** — retours d’erreur, accessibilité, responsive, contrôles de sécurité et déploiement.
+4. **Premier modèle de CV** — modèle classique, aperçu et téléchargement PDF. _(Réalisé.)_
+5. **Gestion des CV** — plusieurs CV, édition, suppression, modèles supplémentaires et réglages.
+6. **Lettres de motivation** — création, édition, organisation, aperçu et export PDF.
+7. **Finitions** — accessibilité, responsive, contrôles de sécurité et déploiement.
 
 Cette feuille de route décrit l’intention du produit ; le périmètre et l’ordre peuvent évoluer à mesure que les étapes sont réalisées.
 

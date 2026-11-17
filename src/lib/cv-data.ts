@@ -1,0 +1,74 @@
+import { prisma } from "@/lib/prisma";
+
+export const defaultCvSettings = { accentColor: "#285c46" } as const;
+
+export type CvProfileData = {
+  firstName: string;
+  lastName: string;
+  title: string;
+  email: string;
+  phone: string;
+  city: string;
+  country: string;
+  website: string;
+  linkedin: string;
+  github: string;
+  summary: string;
+  photo: string;
+  interests: string[];
+  experiences: Array<{
+    position: string; company: string; city: string; startDate: string | null;
+    endDate: string | null; current: boolean; description: string; bullets: string[];
+  }>;
+  education: Array<{
+    degree: string; field: string; institution: string; city: string;
+    startDate: string | null; endDate: string | null; current: boolean; description: string;
+  }>;
+  skills: Array<{ name: string; level: number; category: string }>;
+  languages: Array<{ name: string; level: string }>;
+  projects: Array<{ name: string; description: string; url: string }>;
+  certifications: Array<{ name: string; issuer: string; issueDate: string | null; credentialUrl: string }>;
+};
+
+function dateValue(value: Date | null): string | null {
+  return value?.toISOString() ?? null;
+}
+
+export async function loadCvProfile(userId: string): Promise<CvProfileData | null> {
+  const profile = await prisma.profile.findUnique({
+    where: { userId },
+    include: {
+      experiences: { orderBy: { order: "asc" } },
+      education: { orderBy: { order: "asc" } },
+      skills: { orderBy: { order: "asc" } },
+      languages: { orderBy: { order: "asc" } },
+      projects: { orderBy: { order: "asc" } },
+      certifications: { orderBy: { order: "asc" } },
+    },
+  });
+
+  if (!profile) return null;
+
+  return {
+    firstName: profile.firstName, lastName: profile.lastName, title: profile.title,
+    email: profile.email, phone: profile.phone, city: profile.city, country: profile.country,
+    website: profile.website, linkedin: profile.linkedin, github: profile.github,
+    summary: profile.summary, photo: profile.photo, interests: profile.interests,
+    experiences: profile.experiences.map((item) => ({
+      position: item.position, company: item.company, city: item.city,
+      startDate: dateValue(item.startDate), endDate: dateValue(item.endDate), current: item.current,
+      description: item.description, bullets: item.bullets,
+    })),
+    education: profile.education.map((item) => ({
+      degree: item.degree, field: item.field, institution: item.institution, city: item.city,
+      startDate: dateValue(item.startDate), endDate: dateValue(item.endDate), current: item.current,
+      description: item.description,
+    })),
+    skills: profile.skills.map(({ name, level, category }) => ({ name, level, category })),
+    languages: profile.languages.map(({ name, level }) => ({ name, level })),
+    projects: profile.projects.map(({ name, description, url }) => ({ name, description, url })),
+    certifications: profile.certifications.map(({ name, issuer, issueDate, credentialUrl }) => ({
+      name, issuer, issueDate: dateValue(issueDate), credentialUrl,
+    })),
+  };
+}
