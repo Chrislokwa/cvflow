@@ -49,7 +49,7 @@ export default async function DashboardPage() {
   const greetingName = firstName || session.user.email || "";
 
   return <div className="space-y-8">
-    <header><p className="text-sm font-medium text-[#6b876d]">Votre espace CVFlow</p><h1 className="mt-2 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">Bienvenue{greetingName ? `, ${greetingName}` : ""}.</h1><p className="mt-2 text-sm text-[#737b73]">Préparez et retrouvez vos documents de candidature au même endroit.</p></header>
+    <header><p className="text-sm font-medium text-[#6b876d]">Votre espace CVFlow</p><h1 className="mt-2 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">Bienvenue{greetingName ? <>, <span className="break-all">{greetingName}</span></> : ""}.</h1><p className="mt-2 text-sm text-[#737b73]">Préparez et retrouvez vos documents de candidature au même endroit.</p></header>
 
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(280px,0.75fr)]">
       <section aria-labelledby="completion-heading" className="rounded-2xl border border-[#e5e9e2] bg-white p-5 shadow-sm sm:p-7">

@@ -29,7 +29,7 @@ export default async function AppLayout({
     <div className="min-h-screen bg-[#f7f7f4] text-[#20241f]">
       <header className="border-b border-[#e6eae3] bg-white/90">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-4 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center justify-between gap-6">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <Link
               href="/dashboard"
               className="flex shrink-0 items-center gap-2.5 font-semibold tracking-tight"
@@ -39,8 +39,8 @@ export default async function AppLayout({
               </span>
               <span className="text-xl">CVFlow</span>
             </Link>
-            <div className="flex items-center gap-2 lg:hidden">
-              <span className="max-w-32 truncate text-xs text-[#6e766e]">
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-2 lg:hidden">
+              <span className="min-w-0 max-w-32 flex-1 truncate text-right text-xs text-[#6e766e]">
                 {userLabel}
               </span>
               <form action={logout}>
