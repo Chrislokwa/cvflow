@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 
 function formatDate(value: string | null): string {
   if (!value) return "";
-  return new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(value));
+  return new Intl.DateTimeFormat("fr-FR", { year: "numeric", timeZone: "UTC" }).format(new Date(value));
 }
 
 function formatBirthDate(value: string | null): string {
@@ -117,7 +117,6 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
               <IdentityRow label="Nom" value={profile.lastName} />
               <IdentityRow label="Post-nom" value={profile.postName} />
               <IdentityRow label="Prénom" value={profile.firstName} />
-              <IdentityRow label="Profession" value={profile.title} />
               <IdentityRow label="Adresse" value={profile.address} />
               <IdentityRow label="Ville et pays" value={[profile.city, profile.country].filter(Boolean).join(", ")} />
               <IdentityRow label="Lieu et date de naissance" value={formatBirthPlace(profile.birthPlace, profile.birthDate)} />
