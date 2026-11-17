@@ -1,14 +1,15 @@
-export default function LettersPage() {
-  return (
-    <section className="rounded-2xl border border-[#e5e9e2] bg-white p-6 shadow-sm sm:p-10">
-      <p className="text-sm font-medium text-[#6b876d]">Mes documents</p>
-      <h1 className="mt-3 text-3xl font-medium tracking-[-0.04em]">
-        Mes lettres
-      </h1>
-      <p className="mt-4 text-sm leading-7 text-[#737b73] sm:text-base">
-        La création et la gestion de vos lettres seront disponibles dans une
-        prochaine étape.
-      </p>
-    </section>
-  );
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import LetterLibrary from "@/components/letters/letter-library";
+import type { LetterLibraryItem } from "@/components/letters/letter-library";
+import { prisma } from "@/lib/prisma";
+
+export const instant = false;
+
+export default async function LettersPage() {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+  const letters = await prisma.coverLetter.findMany({ where: { userId: session.user.id }, orderBy: { updatedAt: "desc" }, select: { id: true, title: true, type: true, tone: true, company: true, position: true, updatedAt: true } });
+  const items: LetterLibraryItem[] = letters.map((letter) => ({ ...letter, updatedAt: letter.updatedAt.toISOString() }));
+  return <LetterLibrary items={items} />;
 }

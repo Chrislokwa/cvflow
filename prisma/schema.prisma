@@ -19,12 +19,15 @@ enum CoverLetterType {
   APPLICATION
   UNSOLICITED
   FOLLOW_UP
+  INTERNSHIP
 }
 
 enum CoverLetterTone {
   PROFESSIONAL
   FRIENDLY
   FORMAL
+  DYNAMIC
+  ACADEMIC
 }
 
 model User {
