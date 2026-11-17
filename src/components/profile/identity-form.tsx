@@ -117,7 +117,7 @@ async function resizeImage(file: File): Promise<string> {
 
     for (const quality of [0.9, 0.8, 0.7, 0.6, 0.5, 0.4]) {
       const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/webp", quality),
+        canvas.toBlob(resolve, "image/jpeg", quality),
       );
 
       if (blob && blob.size <= maxPhotoBytes) {

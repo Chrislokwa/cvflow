@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import sharp from "sharp";
 export { defaultCvSettings } from "@/lib/validations/cv-settings";
 
 export type CvProfileData = {
@@ -40,6 +41,15 @@ function dateValue(value: Date | null): string | null {
   return value?.toISOString() ?? null;
 }
 
+async function normalizePhotoForPdf(photo: string): Promise<string> {
+  const webpPrefix = "data:image/webp;base64,";
+  if (!photo.startsWith(webpPrefix)) return photo;
+
+  const imageData = Buffer.from(photo.slice(webpPrefix.length), "base64");
+  const jpegData = await sharp(imageData).jpeg({ quality: 88 }).toBuffer();
+  return `data:image/jpeg;base64,${jpegData.toString("base64")}`;
+}
+
 export async function loadCvProfile(userId: string): Promise<CvProfileData | null> {
   const profile = await prisma.profile.findUnique({
     where: { userId },
@@ -54,13 +64,14 @@ export async function loadCvProfile(userId: string): Promise<CvProfileData | nul
   });
 
   if (!profile) return null;
+  const photo = await normalizePhotoForPdf(profile.photo);
 
   return {
     firstName: profile.firstName, lastName: profile.lastName, postName: profile.postName, title: profile.title,
     email: profile.email, phone: profile.phone, address: profile.address, city: profile.city, country: profile.country, birthPlace: profile.birthPlace,
     birthDate: dateValue(profile.birthDate), maritalStatus: profile.maritalStatus, gender: profile.gender,
     nationality: profile.nationality, website: profile.website, linkedin: profile.linkedin, otherLink: profile.otherLink,
-    summary: profile.summary, photo: profile.photo, interests: profile.interests,
+    summary: profile.summary, photo, interests: profile.interests,
     experiences: profile.experiences.map((item) => ({
       position: item.position, company: item.company, city: item.city,
       startDate: dateValue(item.startDate), endDate: dateValue(item.endDate), current: item.current,
