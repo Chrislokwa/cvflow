@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum CvTemplate {
+  CLASSIC
+  MODERN
+  CREATIVE
+}
+
+enum CoverLetterType {
+  APPLICATION
+  UNSOLICITED
+  FOLLOW_UP
+}
+
+enum CoverLetterTone {
+  PROFESSIONAL
+  FRIENDLY
+  FORMAL
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+  profile      Profile?
+  cvs          Cv[]
+  coverLetters CoverLetter[]
+}
+
+model Profile {
+  id             String          @id @default(cuid())
+  userId         String          @unique
+  firstName      String          @default("")
+  lastName       String          @default("")
+  title          String          @default("")
+  email          String          @default("")
+  phone          String          @default("")
+  city           String          @default("")
+  country        String          @default("")
+  website        String          @default("")
+  linkedin       String          @default("")
+  github         String          @default("")
+  summary        String          @default("")
+  photo          String          @default("")
+  interests      String[]        @default([])
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  education      Education[]
+  experiences    Experience[]
+  skills         Skill[]
+  languages      Language[]
+  projects       Project[]
+  certifications Certification[]
+
+  @@index([userId])
+}
+
+model Education {
+  id          String    @id @default(cuid())
+  profileId   String
+  institution String
+  degree      String
+  field       String    @default("")
+  city        String    @default("")
+  startDate   DateTime?
+  endDate     DateTime?
+  description String    @default("")
+  order       Int       @default(0)
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  profileId   String
+  company     String
+  position    String
+  city        String    @default("")
+  startDate   DateTime?
+  endDate     DateTime?
+  current     Boolean   @default(false)
+  description String    @default("")
+  bullets     String[]  @default([])
+  order       Int       @default(0)
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Skill {
+  id        String  @id @default(cuid())
+  profileId String
+  name      String
+  level     Int
+  category  String  @default("")
+  order     Int     @default(0)
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Language {
+  id        String  @id @default(cuid())
+  profileId String
+  name      String
+  level     String
+  order     Int     @default(0)
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  profileId   String
+  name        String
+  description String    @default("")
+  url         String    @default("")
+  startDate   DateTime?
+  endDate     DateTime?
+  order       Int       @default(0)
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Certification {
+  id            String    @id @default(cuid())
+  profileId     String
+  name          String
+  issuer        String    @default("")
+  issueDate     DateTime?
+  expiryDate    DateTime?
+  credentialUrl String    @default("")
+  order         Int       @default(0)
+  profile       Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Cv {
+  id        String     @id @default(cuid())
+  userId    String
+  title     String
+  template  CvTemplate @default(CLASSIC)
+  settings  Json       @default("{}")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model CoverLetter {
+  id            String          @id @default(cuid())
+  userId        String
+  title         String
+  type          CoverLetterType @default(APPLICATION)
+  tone          CoverLetterTone @default(PROFESSIONAL)
+  company       String          @default("")
+  position      String          @default("")
+  recruiterName String          @default("")
+  city          String          @default("")
+  content       String          @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
