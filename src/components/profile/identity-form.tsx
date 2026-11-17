@@ -20,6 +20,7 @@ const profileFields = [
   "address",
   "city",
   "country",
+  "birthPlace",
   "birthDate",
   "maritalStatus",
   "gender",
@@ -412,6 +413,11 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
               {errors.birthDate && <FieldMessage>{errors.birthDate.message}</FieldMessage>}
             </div>
             <div>
+              <label htmlFor="birthPlace" className="text-sm font-medium text-[#303a32]">Lieu de naissance <span className="font-normal text-[#858d85]">(facultatif)</span></label>
+              <input {...register("birthPlace")} id="birthPlace" autoComplete="off" className={inputClassName} placeholder="Ex. Kinshasa" aria-invalid={Boolean(errors.birthPlace)} />
+              {errors.birthPlace && <FieldMessage>{errors.birthPlace.message}</FieldMessage>}
+            </div>
+            <div>
               <label htmlFor="nationality" className="text-sm font-medium text-[#303a32]">Nationalité <span className="font-normal text-[#858d85]">(facultative)</span></label>
               <input {...register("nationality")} id="nationality" autoComplete="nationality" className={inputClassName} aria-invalid={Boolean(errors.nationality)} />
               {errors.nationality && <FieldMessage>{errors.nationality.message}</FieldMessage>}
@@ -422,7 +428,7 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
               {errors.maritalStatus && <FieldMessage>{errors.maritalStatus.message}</FieldMessage>}
             </div>
             <div>
-              <label htmlFor="gender" className="text-sm font-medium text-[#303a32]">Sexe ou genre <span className="font-normal text-[#858d85]">(facultatif)</span></label>
+              <label htmlFor="gender" className="text-sm font-medium text-[#303a32]">Sexe <span className="font-normal text-[#858d85]">(facultatif)</span></label>
               <input {...register("gender")} id="gender" className={inputClassName} aria-invalid={Boolean(errors.gender)} />
               {errors.gender && <FieldMessage>{errors.gender.message}</FieldMessage>}
             </div>
@@ -494,7 +500,7 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
               htmlFor="summary"
               className="text-sm font-medium text-[#303a32]"
             >
-              Résumé professionnel
+              Résumé professionnel (facultatif)
             </label>
             <span
               className="shrink-0 text-xs text-[#858d85] tabular-nums"

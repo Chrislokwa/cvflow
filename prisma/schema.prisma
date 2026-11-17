@@ -48,6 +48,7 @@ model Profile {
   address        String          @default("")
   city           String          @default("")
   country        String          @default("")
+  birthPlace     String          @default("")
   birthDate      DateTime?
   maritalStatus  String          @default("")
   gender         String          @default("")

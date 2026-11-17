@@ -65,6 +65,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
     address: profileDetails?.address ?? "",
     city: profileDetails?.city ?? "",
     country: profileDetails?.country ?? "",
+    birthPlace: profileDetails?.birthPlace ?? "",
     birthDate: profileDetails?.birthDate?.toISOString().slice(0, 10) ?? "",
     maritalStatus: profileDetails?.maritalStatus ?? "",
     gender: profileDetails?.gender ?? "",

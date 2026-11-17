@@ -12,6 +12,7 @@ export type CvProfileData = {
   address: string;
   city: string;
   country: string;
+  birthPlace: string;
   birthDate: string | null;
   maritalStatus: string;
   gender: string;
@@ -57,7 +58,7 @@ export async function loadCvProfile(userId: string): Promise<CvProfileData | nul
 
   return {
     firstName: profile.firstName, lastName: profile.lastName, postName: profile.postName, title: profile.title,
-    email: profile.email, phone: profile.phone, address: profile.address, city: profile.city, country: profile.country,
+    email: profile.email, phone: profile.phone, address: profile.address, city: profile.city, country: profile.country, birthPlace: profile.birthPlace,
     birthDate: dateValue(profile.birthDate), maritalStatus: profile.maritalStatus, gender: profile.gender,
     nationality: profile.nationality, website: profile.website, linkedin: profile.linkedin, otherLink: profile.otherLink,
     summary: profile.summary, photo: profile.photo, interests: profile.interests,

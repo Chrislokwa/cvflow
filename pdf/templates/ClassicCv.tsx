@@ -8,6 +8,7 @@ type Props = { profile: CvProfileData; settings: ClassicCvSettings };
 
 const styles = StyleSheet.create({
   page: { paddingTop: 40, paddingBottom: 40, paddingHorizontal: 48, fontFamily: "Roboto", fontSize: 9, color: "#252525", lineHeight: 1.4 },
+  documentTitle: { marginBottom: 15, textAlign: "center", fontFamily: "Lora", fontSize: 15, fontWeight: 700, letterSpacing: 1.1 },
   identityContent: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
   identityDetails: { flexGrow: 1, flexShrink: 1 },
   photo: { width: 76, height: 76, borderRadius: 3, objectFit: "cover" },
@@ -21,9 +22,9 @@ const styles = StyleSheet.create({
   identityValue: { flexGrow: 1, flexShrink: 1, fontWeight: 700 },
   paragraph: { color: "#343434" },
   entry: { marginBottom: 6 },
-  entryHeader: { flexDirection: "row", justifyContent: "space-between", gap: 8 },
-  entryTitle: { fontFamily: "Roboto", fontWeight: 700, fontSize: 9.5, flexGrow: 1 },
-  date: { fontSize: 8, color: "#555", textAlign: "right" },
+  entryLine: { marginBottom: 2 },
+  entryTitle: { fontFamily: "Roboto", fontWeight: 700, fontSize: 9.5 },
+  date: { fontSize: 9, color: "#555" },
   subline: { marginTop: 1, fontSize: 8.5, color: "#555" },
   bullet: { flexDirection: "row", marginTop: 2, paddingLeft: 8, gap: 5 },
   bulletDot: { width: 5 },
@@ -41,6 +42,11 @@ function formatDate(value: string | null): string {
 function formatBirthDate(value: string | null): string {
   if (!value) return "";
   return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(value));
+}
+
+function formatBirthPlace(birthPlace: string, birthDate: string | null): string {
+  const date = formatBirthDate(birthDate);
+  return [birthPlace, date ? `le ${date}` : ""].filter(Boolean).join(", ");
 }
 
 function dateRange(start: string | null, end: string | null, current = false): string {
@@ -104,6 +110,7 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
   return (
     <Document title={`CV ${fullName}`} author={fullName}>
       <Page size="A4" style={styles.page} wrap>
+        <Text style={[styles.documentTitle, { color: settings.accentColor }]}>CURRICULUM VITAE</Text>
         <Section title="Identité" number={numberFor("Identité")} accentColor={settings.accentColor}>
           <View style={styles.identityContent}>
             <View style={styles.identityDetails}>
@@ -113,9 +120,9 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
               <IdentityRow label="Profession" value={profile.title} />
               <IdentityRow label="Adresse" value={profile.address} />
               <IdentityRow label="Ville et pays" value={[profile.city, profile.country].filter(Boolean).join(", ")} />
-              <IdentityRow label="Date de naissance" value={formatBirthDate(profile.birthDate)} />
+              <IdentityRow label="Lieu et date de naissance" value={formatBirthPlace(profile.birthPlace, profile.birthDate)} />
               <IdentityRow label="État civil" value={profile.maritalStatus} />
-              <IdentityRow label="Sexe ou genre" value={profile.gender} />
+              <IdentityRow label="Sexe" value={profile.gender} />
               <IdentityRow label="Nationalité" value={profile.nationality} />
               <IdentityRow label="Téléphone" value={profile.phone} />
               <IdentityRow label="E-mail" value={profile.email} />
@@ -130,16 +137,14 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
 
         {education.length ? <Section title="Études et formations" number={numberFor("Études et formations")} accentColor={settings.accentColor}>{education.map((item, index) => (
           <View key={`${item.degree}-${index}`} style={styles.entry} wrap={false}>
-            <View style={styles.entryHeader} minPresenceAhead={24}><Text style={styles.entryTitle}>{[item.degree, item.field].filter(Boolean).join(" — ") || item.institution}</Text><Text style={styles.date}>{dateRange(item.startDate, item.endDate, item.current)}</Text></View>
-            <Text style={styles.subline}>{[item.institution, item.city].filter(Boolean).join(" · ")}</Text>
+            <Text style={styles.entryLine}><Text style={styles.date}>{dateRange(item.startDate, item.endDate, item.current)}{item.startDate ? " : " : ""}</Text><Text style={styles.entryTitle}>{[item.degree, item.field].filter(Boolean).join(" — ") || item.institution}</Text>{item.degree || item.field ? <Text>{[item.institution, item.city].filter(Boolean).length ? `, ${[item.institution, item.city].filter(Boolean).join(", ")}` : ""}</Text> : null}</Text>
             {item.description.trim() ? <Text>{item.description}</Text> : null}
           </View>
         ))}</Section> : null}
 
         {experiences.length ? <Section title="Expériences professionnelles" number={numberFor("Expériences professionnelles")} accentColor={settings.accentColor}>{experiences.map((item, index) => (
           <View key={`${item.position}-${index}`} style={styles.entry} wrap={false}>
-            <View style={styles.entryHeader} minPresenceAhead={24}><Text style={styles.entryTitle}>{item.position || item.company}</Text><Text style={styles.date}>{dateRange(item.startDate, item.endDate, item.current)}</Text></View>
-            <Text style={styles.subline}>{[item.company, item.city].filter(Boolean).join(" · ")}</Text>
+            <Text style={styles.entryLine}><Text style={styles.date}>{dateRange(item.startDate, item.endDate, item.current)}{item.startDate ? " : " : ""}</Text><Text style={styles.entryTitle}>{item.position || item.company}</Text>{item.position && item.company ? <Text>{`, ${item.company}`}</Text> : null}{item.city ? <Text>{`, ${item.city}`}</Text> : null}</Text>
             {item.description.trim() ? <Text>{item.description}</Text> : null}
             {item.bullets.map((bullet, bulletIndex) => bullet.trim() ? <View key={`${bulletIndex}-${bullet}`} style={styles.bullet}><Text style={styles.bulletDot}>•</Text><Text style={styles.bulletText}>{bullet}</Text></View> : null)}
           </View>
@@ -147,8 +152,7 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
 
         {profile.certifications.length ? <Section title="Formations complémentaires" number={numberFor("Formations complémentaires")} accentColor={settings.accentColor}>{profile.certifications.map((item, index) => (
           <View key={`${item.name}-${index}`} style={styles.entry} wrap={false}>
-            <View style={styles.entryHeader} minPresenceAhead={22}><Text style={styles.entryTitle}>{item.name}</Text><Text style={styles.date}>{formatDate(item.issueDate)}</Text></View>
-            {item.issuer ? <Text style={styles.subline}>{item.issuer}</Text> : null}
+            <Text style={styles.entryLine}><Text style={styles.date}>{formatDate(item.issueDate)}{item.issueDate ? " : " : ""}</Text><Text style={styles.entryTitle}>{item.name}</Text>{item.issuer ? <Text>{`, ${item.issuer}`}</Text> : null}</Text>
             {item.credentialUrl ? <Text style={styles.subline}>{item.credentialUrl}</Text> : null}
           </View>
         ))}</Section> : null}

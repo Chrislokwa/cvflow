@@ -76,6 +76,7 @@ export const profileSchema = z.object({
     .string()
     .trim()
     .max(100, "Le pays ne peut pas dépasser 100 caractères."),
+  birthPlace: z.string().trim().max(150, "Le lieu de naissance ne peut pas dépasser 150 caractères."),
   birthDate: optionalDate,
   maritalStatus: z.string().trim().max(80, "La valeur est trop longue."),
   gender: z.string().trim().max(80, "La valeur est trop longue."),
