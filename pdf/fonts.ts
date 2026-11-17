@@ -5,6 +5,8 @@ export type PdfFontSources = {
   robotoBold: string;
   loraRegular: string;
   loraBold: string;
+  merriweatherRegular: string;
+  merriweatherBold: string;
 };
 
 let registered = false;
@@ -23,6 +25,13 @@ export function registerPdfFonts(sources: PdfFontSources): void {
     fonts: [
       { src: sources.loraRegular, fontWeight: 400 },
       { src: sources.loraBold, fontWeight: 700 },
+    ],
+  });
+  Font.register({
+    family: "Merriweather",
+    fonts: [
+      { src: sources.merriweatherRegular, fontWeight: 400 },
+      { src: sources.merriweatherBold, fontWeight: 700 },
     ],
   });
   Font.registerHyphenationCallback((word) => [word]);

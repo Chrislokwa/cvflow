@@ -1,16 +1,31 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import CvLibrary from "@/components/cv/cv-library";
+import { prisma } from "@/lib/prisma";
+import type { CvLibraryItem } from "@/components/cv/cv-library";
 
-export default function CvsPage() {
+export const instant = false;
+
+export default async function CvsPage() {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+
+  const cvs = await prisma.cv.findMany({
+    where: { userId: session.user.id },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, title: true, template: true, updatedAt: true },
+  });
+  const items: CvLibraryItem[] = cvs.map((cv) => ({
+    id: cv.id,
+    title: cv.title,
+    template: cv.template === "MODERN" || cv.template === "MINIMAL" ? cv.template : "CLASSIC",
+    updatedAt: cv.updatedAt.toISOString(),
+  }));
+
   return (
-    <section className="rounded-2xl border border-[#e5e9e2] bg-white p-6 shadow-sm sm:p-10">
-      <p className="text-sm font-medium text-[#6b876d]">Mes documents</p>
-      <h1 className="mt-3 text-3xl font-medium tracking-[-0.04em]">Mes CV</h1>
-      <p className="mt-4 text-sm leading-7 text-[#737b73] sm:text-base">
-        Prévisualisez votre CV classique et téléchargez-le au format PDF.
-      </p>
-      <Link href="/cvs/new" className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-[#285c46] px-5 text-sm font-semibold text-white transition hover:bg-[#214c3a]">
-        Créer un CV
-      </Link>
+    <section className="space-y-6">
+      <header><p className="text-sm font-medium text-[#6b876d]">Mes documents</p><h1 className="mt-2 text-3xl font-medium tracking-[-0.04em]">Mes CV</h1><p className="mt-2 text-sm text-[#737b73]">Créez plusieurs versions et adaptez leur présentation à chaque candidature.</p></header>
+      <CvLibrary items={items} />
     </section>
   );
 }

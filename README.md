@@ -32,18 +32,15 @@ Les fonctionnalités déjà disponibles :
 - Gestion des formations, expériences, compétences, langues, projets, certifications et centres d’intérêt.
 - Réorganisation des éléments du profil et confirmation avant suppression.
 - Vérification côté serveur de la propriété du profil et des éléments associés.
-- Aperçu A4 du modèle classique à partir du profil connecté.
-- Téléchargement PDF protégé, avec les polices Roboto et Lora embarquées localement.
+- Aperçu A4 des modèles classique, moderne et minimal à partir du profil connecté.
+- Plusieurs CV par compte avec duplication, renommage, suppression et sauvegarde des réglages.
+- Export PDF protégé, avec les polices Roboto, Lora et Merriweather embarquées localement.
 - Présentation classique inspirée du CV joint, avec rubriques numérotées et accent bleu.
 - Liens professionnels génériques et facultatifs (site, portfolio, LinkedIn, GitHub ou autre).
 
 Les fonctionnalités prévues :
 
-- Espace personnel pour consulter et gérer ses documents.
 - Profil réutilisable contenant les coordonnées, le résumé, les expériences, les formations, les compétences, les langues, les projets, les certifications et les centres d’intérêt.
-- Création et modification de plusieurs CV par utilisateur.
-- Choix de modèles de CV et réglages de présentation.
-- Gestion complète de plusieurs CV, modification, suppression et réglages de présentation.
 - Création de lettres de motivation avec type de candidature, ton, entreprise, poste et destinataire.
 - Prévisualisation et export des lettres de motivation en PDF.
 - Validation Zod des formulaires d’authentification côté interface et serveur.
@@ -62,7 +59,7 @@ Les fonctionnalités prévues :
 - **ESLint** et **Prettier**
 - **@react-pdf/renderer** pour l’aperçu et l’export PDF
 
-Les polices Roboto et Lora sont fournies depuis `public/fonts` avec leurs licences SIL Open Font License. Aucune police n’est chargée depuis un service externe à l’exécution.
+Les polices Roboto, Lora et Merriweather sont fournies depuis `public/fonts` avec leurs licences SIL Open Font License. Aucune police n’est chargée depuis un service externe à l’exécution.
 
 ## Prérequis
 
@@ -169,7 +166,7 @@ src/
     (app)/          Espace connecté et pages provisoires
     actions/        Actions serveur d’authentification
     api/auth/       Gestionnaire de routes Auth.js
-    api/cv-preview/ Export PDF privé du CV courant
+    api/cvs/[id]/pdf/ Export PDF privé du CV sélectionné
   components/cv/    Aperçu PDF côté navigateur
   auth.ts           Configuration Auth.js et Credentials
   proxy.ts          Redirections optimistes des routes
@@ -197,7 +194,7 @@ Les étapes prévues, dans l’ordre général, sont :
 2. **Authentification** — inscription, connexion et déconnexion avec Auth.js Credentials, mots de passe hachés et sessions JWT. _(Réalisé.)_
 3. **Profil professionnel** — identité, éléments de parcours et centres d’intérêt. _(Réalisé.)_
 4. **Premier modèle de CV** — modèle classique, aperçu et téléchargement PDF. _(Réalisé.)_
-5. **Gestion des CV** — plusieurs CV, édition, suppression, modèles supplémentaires et réglages.
+5. **Gestion des CV** — plusieurs CV, modèles classique, moderne et minimal, réglages et export PDF. _(Réalisé.)_
 6. **Lettres de motivation** — création, édition, organisation, aperçu et export PDF.
 7. **Finitions** — accessibilité, responsive, contrôles de sécurité et déploiement.
 

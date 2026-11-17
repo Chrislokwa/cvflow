@@ -1,0 +1,1 @@
+ALTER TYPE "CvTemplate" ADD VALUE 'MINIMAL';

@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
-export const defaultCvSettings = { accentColor: "#2869a7" } as const;
+export { defaultCvSettings } from "@/lib/validations/cv-settings";
 
 export type CvProfileData = {
   firstName: string;

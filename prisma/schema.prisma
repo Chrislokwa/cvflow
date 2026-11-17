@@ -11,6 +11,7 @@ datasource db {
 enum CvTemplate {
   CLASSIC
   MODERN
+  MINIMAL
   CREATIVE
 }
 
