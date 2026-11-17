@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 import CvPreviewLoader from "@/components/cv/cv-preview-loader";
 import { loadCvProfile } from "@/lib/cv-data";
 
+export const instant = false;
+
 export default async function NewCvPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
