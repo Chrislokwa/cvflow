@@ -2,7 +2,7 @@
 
 CVFlow est une application web de création de CV et de lettres de motivation. Son objectif est d’aider chaque personne à organiser son parcours, préparer des candidatures adaptées et exporter des documents professionnels.
 
-> **État du projet :** le socle technique, la page d’accueil et le schéma de données sont en place. Les écrans de connexion, l’espace personnel, les formulaires, la génération PDF et les autres fonctionnalités décrites dans la feuille de route sont prévus, mais ne sont pas encore disponibles.
+> **État du projet :** le socle technique, la page d’accueil, le schéma de données et l’authentification sont en place. Le tableau de bord et les pages Profil, Mes CV et Mes lettres sont des espaces provisoires. La gestion du profil, l’édition des documents et la génération PDF restent à implémenter.
 
 ## Sommaire
 
@@ -18,11 +18,19 @@ CVFlow est une application web de création de CV et de lettres de motivation. S
 - [Feuille de route](#feuille-de-route)
 - [Contribuer](#contribuer)
 
-## Fonctionnalités prévues
+## Fonctionnalités disponibles et prévues
 
-La conception de CVFlow prévoit les fonctions suivantes. Elles seront implémentées progressivement :
+Les fonctionnalités déjà disponibles :
 
-- Création de compte et connexion par adresse e-mail et mot de passe.
+- Inscription, connexion et déconnexion par adresse e-mail et mot de passe.
+- Sessions JWT avec Auth.js Credentials.
+- Mots de passe hachés avec bcryptjs.
+- Création automatique d’un profil vide lors de l’inscription.
+- Protection des pages privées et redirection vers la connexion.
+- Tableau de bord provisoire et navigation de l’espace connecté.
+
+Les fonctionnalités prévues :
+
 - Espace personnel pour consulter et gérer ses documents.
 - Profil réutilisable contenant les coordonnées, le résumé, les expériences, les formations, les compétences, les langues, les projets, les certifications et les centres d’intérêt.
 - Création et modification de plusieurs CV par utilisateur.
@@ -30,7 +38,8 @@ La conception de CVFlow prévoit les fonctions suivantes. Elles seront implémen
 - Prévisualisation et export des CV en PDF.
 - Création de lettres de motivation avec type de candidature, ton, entreprise, poste et destinataire.
 - Prévisualisation et export des lettres de motivation en PDF.
-- Validation des formulaires dans l’interface et côté serveur.
+- Validation Zod des formulaires d’authentification côté interface et serveur.
+- Validation des autres formulaires côté interface et serveur lors de leur implémentation.
 - Interface responsive, en français.
 
 ## Technologies
@@ -40,9 +49,11 @@ La conception de CVFlow prévoit les fonctions suivantes. Elles seront implémen
 - **Tailwind CSS 4**
 - **PostgreSQL** (Neon en production, PostgreSQL local pour le développement)
 - **Prisma 6** pour le schéma, les migrations et l’accès aux données
+- **Auth.js v5** avec Credentials et sessions JWT
+- **bcryptjs**, **Zod** et **React Hook Form** pour l’authentification et ses formulaires
 - **ESLint** et **Prettier**
 
-Les choix prévus pour les prochaines étapes sont Auth.js v5 avec Credentials et sessions JWT, `bcryptjs` pour le hachage des mots de passe, Zod et React Hook Form pour la validation, et `@react-pdf/renderer` pour les PDF. Ces bibliothèques et fonctions ne sont pas encore intégrées à l’application.
+`@react-pdf/renderer` sera ajouté lors de l’implémentation des exports PDF.
 
 ## Prérequis
 
@@ -68,7 +79,7 @@ npm run db:migrate
 npm run dev
 ```
 
-L’application sera disponible à l’adresse [http://localhost:3000](http://localhost:3000). La route `/` affiche actuellement la page d’accueil de CVFlow. Les liens Connexion et Inscription sont des points d’entrée visuels et ne sont pas encore reliés à des formulaires.
+L’application sera disponible à l’adresse [http://localhost:3000](http://localhost:3000). La route `/` affiche la page d’accueil. Vous pouvez créer un compte sur `/register`, puis vous connecter sur `/login`. Les routes de l’espace connecté nécessitent une session.
 
 ## Configuration
 
@@ -95,7 +106,7 @@ Si le mot de passe PostgreSQL contient des caractères réservés aux URL, tels 
 
 Pour Neon, utilisez l’URL de connexion fournie par Neon. Configurez `DIRECT_URL` avec l’URL directe recommandée pour les migrations. Ne publiez aucune URL contenant un mot de passe.
 
-> Les variables `AUTH_SECRET` et `AUTH_URL` sont préparées pour l’intégration future d’Auth.js ; l’authentification n’est pas encore configurée.
+`AUTH_SECRET` et `AUTH_URL` sont utilisés par Auth.js. Gardez `AUTH_SECRET` confidentiel et définissez une valeur forte différente en production.
 
 ## Base de données et Prisma
 
@@ -107,7 +118,7 @@ Le schéma Prisma se trouve dans `prisma/schema.prisma`. Il définit actuellemen
 - `Cv` et `CoverLetter`, liés au compte utilisateur ;
 - des enums pour les modèles de CV et les types et tons de lettres.
 
-Les relations de propriété utilisent des suppressions en cascade. Les tables qui appartiennent à un utilisateur ou un profil ont des index sur leurs clés de relation. Les règles d’accès par utilisateur devront également être appliquées dans chaque opération serveur lors de l’implémentation des fonctionnalités.
+Les relations de propriété utilisent des suppressions en cascade. Les tables qui appartiennent à un utilisateur ou un profil ont des index sur leurs clés de relation. L’authentification est vérifiée sur les routes privées ; chaque future lecture ou mutation de document devra aussi vérifier sa propriété côté serveur.
 
 Après avoir configuré `.env`, appliquez les migrations de développement avec :
 
@@ -125,14 +136,14 @@ Les migrations versionnées se trouvent dans `prisma/migrations/`. Ne modifiez p
 
 ## Commandes disponibles
 
-| Commande | Description |
-| --- | --- |
-| `npm run dev` | Démarre le serveur Next.js en développement. |
-| `npm run build` | Produit une build de production. |
-| `npm run start` | Démarre la build de production existante. |
-| `npm run lint` | Vérifie le code avec ESLint. |
-| `npm run db:migrate` | Crée et applique une migration Prisma de développement. |
-| `npm run db:generate` | Génère le client Prisma. |
+| Commande              | Description                                             |
+| --------------------- | ------------------------------------------------------- |
+| `npm run dev`         | Démarre le serveur Next.js en développement.            |
+| `npm run build`       | Produit une build de production.                        |
+| `npm run start`       | Démarre la build de production existante.               |
+| `npm run lint`        | Vérifie le code avec ESLint.                            |
+| `npm run db:migrate`  | Crée et applique une migration Prisma de développement. |
+| `npm run db:generate` | Génère le client Prisma.                                |
 
 ## Structure du projet
 
@@ -145,14 +156,21 @@ src/
     globals.css     Styles globaux et Tailwind
     layout.tsx      Layout racine et métadonnées
     page.tsx        Page d’accueil
+    (auth)/         Inscription et connexion
+    (app)/          Espace connecté et pages provisoires
+    actions/        Actions serveur d’authentification
+    api/auth/       Gestionnaire de routes Auth.js
+  auth.ts           Configuration Auth.js et Credentials
+  proxy.ts          Redirections optimistes des routes
   lib/
     prisma.ts       Singleton Prisma
+    validations/    Schémas Zod
 .env.example       Exemple de configuration locale
 ```
 
 ## Sécurité et données
 
-Les données personnelles et les documents stockés dans CVFlow sont privés. Toute future route, action serveur ou mutation devra vérifier côté serveur que la ressource appartient à l’utilisateur authentifié ; masquer une ressource uniquement dans l’interface ne suffit pas. Les mots de passe ne seront stockés que sous forme de hachage. Les secrets et identifiants de base de données doivent rester dans `.env` ou dans le gestionnaire de secrets de l’environnement de déploiement.
+Les données personnelles et les documents stockés dans CVFlow sont privés. Les pages privées vérifient la session côté serveur et le proxy Next.js effectue les redirections d’accès. Toute future lecture ou mutation devra vérifier côté serveur que la ressource appartient à l’utilisateur authentifié ; masquer une ressource uniquement dans l’interface ne suffit pas. Les mots de passe sont stockés sous forme de hachage bcrypt. Les secrets et identifiants de base de données doivent rester dans `.env` ou dans le gestionnaire de secrets de l’environnement de déploiement.
 
 Le fichier `.env` est ignoré par Git. `.env.example` ne contient que des valeurs fictives.
 
@@ -160,8 +178,8 @@ Le fichier `.env` est ignoré par Git. `.env.example` ne contient que des valeur
 
 Les étapes prévues, dans l’ordre général, sont :
 
-1. **Socle et base de données** — projet Next.js, design initial, schéma Prisma et migration de départ. *(Réalisé.)*
-2. **Authentification** — inscription, connexion et déconnexion avec Auth.js Credentials, mots de passe hachés et sessions JWT.
+1. **Socle et base de données** — projet Next.js, design initial, schéma Prisma et migration de départ. _(Réalisé.)_
+2. **Authentification** — inscription, connexion et déconnexion avec Auth.js Credentials, mots de passe hachés et sessions JWT. _(Réalisé.)_
 3. **Profil professionnel** — formulaires validés et gestion des informations personnelles, expériences, formations et éléments complémentaires.
 4. **Gestion des CV** — création, édition, suppression, choix de modèle et réglages.
 5. **Génération des PDF** — prévisualisation et téléchargement des CV.
@@ -175,6 +193,6 @@ Cette feuille de route décrit l’intention du produit ; le périmètre et l’
 - L’interface, les libellés et la documentation destinée aux utilisateurs sont en français.
 - Le code, les noms de variables et les commentaires sont en anglais.
 - Utilisez TypeScript strict et évitez `any`.
-- Validez les données à la fois côté client et côté serveur lorsque les formulaires seront ajoutés.
+- Validez les données à la fois côté client et côté serveur pour chaque formulaire.
 - Vérifiez la propriété de chaque ressource côté serveur avant de la lire ou de la modifier.
 - Avant un commit, lancez `npm run lint` et `npm run build`.
