@@ -51,11 +51,11 @@ function MainSection({ title, accent, children }: { title: string; accent: strin
   return <View style={styles.mainSection}><Text style={[styles.mainHeading, { color: accent, borderBottomColor: accent }]} minPresenceAhead={45}>{title}</Text>{children}</View>;
 }
 
-function Identity({ profile, settings }: { profile: CvProfileData; settings: CvSettings }) {
+function Identity({ profile }: { profile: CvProfileData }) {
   const name = [profile.firstName, profile.postName, profile.lastName].filter(Boolean).join(" ");
   return <>
     {/* eslint-disable-next-line jsx-a11y/alt-text */}
-    {settings.showPhoto && profile.photo.startsWith("data:image/") ? <Image src={profile.photo} style={styles.photo} /> : null}
+    {profile.photo.startsWith("data:image/") ? <Image src={profile.photo} style={styles.photo} /> : null}
     <Text style={styles.name}>{name || "Votre nom"}</Text>
     {profile.title ? <Text style={styles.role}>{profile.title}</Text> : null}
     {[profile.email, profile.phone, profile.address, [profile.city, profile.country].filter(Boolean).join(", "), [profile.birthPlace, profile.birthDate ? `le ${new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(profile.birthDate))}` : ""].filter(Boolean).join(", "), profile.maritalStatus, profile.gender, profile.nationality, profile.website, profile.linkedin, profile.otherLink].filter(Boolean).map((item, index) => <Text key={`${index}-${item}`} style={styles.sidebarText}>{item}</Text>)}
@@ -76,7 +76,7 @@ export default function ModernCv({ profile, settings }: Props): ReactElement<Doc
   const mainSections = visible.filter((section) => mainKeys.includes(section) && (section !== "summary" || Boolean(profile.summary.trim())) && (section !== "experiences" || profile.experiences.length > 0) && (section !== "education" || profile.education.length > 0) && (section !== "projects" || profile.projects.length > 0) && (section !== "certifications" || profile.certifications.length > 0));
   const fontFamily = { roboto: "Roboto", lora: "Lora", merriweather: "Merriweather" }[settings.fontFamily];
   const sidebarContent: Record<CvSection, ReactNode> = {
-    identity: <Identity profile={profile} settings={settings} />,
+    identity: <Identity profile={profile} />,
     skills: <>{profile.skills.map((skill, index) => <Text key={`${skill.name}-${index}`} style={styles.sidebarText}>{skill.name}{skill.category ? ` · ${skill.category}` : ""}{skill.level ? ` · ${skill.level}/5` : ""}</Text>)}</>,
     languages: <>{profile.languages.map((language, index) => <Text key={`${language.name}-${index}`} style={styles.sidebarText}>{language.name}{language.level ? ` · ${language.level}` : ""}</Text>)}</>,
     interests: <>{profile.interests.map((item, index) => <Text key={`${item}-${index}`} style={styles.sidebarText}>{item}</Text>)}</>,

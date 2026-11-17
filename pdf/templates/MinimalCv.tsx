@@ -1,4 +1,4 @@
-import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { DocumentProps } from "@react-pdf/renderer";
 import type { ReactElement, ReactNode } from "react";
 import type { CvProfileData } from "@/lib/cv-data";
@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
   entry: { marginBottom: 8 },
   titleText: { fontWeight: 700 },
   date: { color: "#777" },
-  photo: { width: 70, height: 70, marginBottom: 10, borderRadius: 35, objectFit: "cover" },
   bullets: { flexDirection: "row", marginTop: 2, paddingLeft: 8, gap: 5 },
   bulletText: { flexGrow: 1, flexShrink: 1 },
   tags: { flexDirection: "row", flexWrap: "wrap", gap: 5 },
@@ -57,8 +56,6 @@ export default function MinimalCv({ profile, settings }: Props): ReactElement<Do
         <Row label="Ville et pays" value={[profile.city, profile.country].filter(Boolean).join(", ")} /><Row label="Sexe" value={profile.gender} /><Row label="État civil" value={profile.maritalStatus} /><Row label="Nationalité" value={profile.nationality} />
         <Row label="Téléphone" value={profile.phone} /><Row label="E-mail" value={profile.email} /><Row label="Site web ou portfolio" value={profile.website} /><Row label="Profil professionnel" value={profile.linkedin} /><Row label="Lien complémentaire" value={profile.otherLink} />
       </View>
-      {/* eslint-disable-next-line jsx-a11y/alt-text */}
-      {settings.showPhoto && profile.photo.startsWith("data:image/") ? <Image src={profile.photo} style={styles.photo} /> : null}
     </View>,
     summary: <Text>{profile.summary}</Text>,
     education: <>{profile.education.map((item, index) => <View key={`${item.degree}-${index}`} style={styles.entry} wrap={false}><Text><Text style={styles.date}>{range(item.startDate, item.endDate, item.current)}{dateSeparator(item.startDate ?? "")}</Text><Text style={styles.titleText}>{[item.degree, item.field].filter(Boolean).join(" — ") || item.institution}</Text>{item.degree && item.institution ? `, ${item.institution}` : ""}</Text>{item.description ? <Text>{item.description}</Text> : null}</View>)}</>,

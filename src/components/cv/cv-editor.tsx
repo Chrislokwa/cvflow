@@ -130,7 +130,7 @@ export default function CvEditor({ id, title, profile, initialSettings }: { id: 
             </select>
           </label>
 
-          <label className="flex items-center gap-3 text-sm font-medium text-[#303a32]"><input type="checkbox" checked={settings.showPhoto} onChange={(event) => updateSettings({ showPhoto: event.target.checked })} className="size-4 accent-[#2869a7]" />Afficher la photo</label>
+          {settings.template === "MODERN" && <p className="text-xs text-[#737b73]">La photo de votre profil apparaît dans le modèle Moderne.</p>}
 
           <fieldset>
             <legend className="text-sm font-semibold text-[#303a32]">Sections visibles et ordre</legend>

@@ -1,4 +1,4 @@
-import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { DocumentProps } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
 import type { CvProfileData } from "@/lib/cv-data";
@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
   documentTitle: { marginBottom: 15, textAlign: "center", fontSize: 15, fontWeight: 700, letterSpacing: 1.1 },
   identityContent: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
   identityDetails: { flexGrow: 1, flexShrink: 1 },
-  photo: { width: 76, height: 76, borderRadius: 3, objectFit: "cover" },
   section: { marginTop: 13 },
   sectionHeading: { flexDirection: "row", alignItems: "center", gap: 13, paddingBottom: 4, borderBottomWidth: 1 },
   sectionNumber: { width: 27, fontSize: 10, fontWeight: 700 },
@@ -119,8 +118,6 @@ export default function ClassicCv({ profile, settings }: Props): ReactElement<Do
         <IdentityRow label="E-mail" value={profile.email} />
         {linkRows.map((row) => <IdentityRow key={row.label} label={row.label} value={row.value} />)}
       </View>
-      {/* eslint-disable-next-line jsx-a11y/alt-text */}
-      {settings.showPhoto && profile.photo.startsWith("data:image/") ? <Image src={profile.photo} style={styles.photo} /> : null}
     </View>,
     summary: <Text style={styles.paragraph}>{profile.summary}</Text>,
     education: <>{education.map((item, index) => <View key={`${item.degree}-${index}`} style={styles.entry} wrap={false}>
