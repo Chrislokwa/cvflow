@@ -72,6 +72,7 @@ model Education {
   city        String    @default("")
   startDate   DateTime?
   endDate     DateTime?
+  current     Boolean   @default(false)
   description String    @default("")
   order       Int       @default(0)
   profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)

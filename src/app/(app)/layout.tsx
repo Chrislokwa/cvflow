@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { auth } from "@/auth";
 import { logout } from "@/app/actions/auth";
 
@@ -15,6 +16,7 @@ const navigationItems = [
 export default async function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  await connection();
   const session = await auth();
 
   if (!session?.user?.id) {
