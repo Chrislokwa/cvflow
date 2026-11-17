@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
@@ -5,6 +6,7 @@ import NewLetterForm from "@/components/letters/new-letter-form";
 import { prisma } from "@/lib/prisma";
 
 export const instant = false;
+export const metadata: Metadata = { title: "Nouvelle lettre" };
 
 export default async function NewLetterPage() {
   const session = await auth();

@@ -8,6 +8,9 @@ import type { LetterPdfData, LetterSender } from "../../../../../../pdf/template
 import { registerPdfFonts } from "../../../../../../pdf/fonts";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const letterIdSchema = z.string().trim().min(1).max(64);
 
 function safeFilePart(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "_").replace(/^_+|_+$/g, "") || "Entreprise";
@@ -16,7 +19,10 @@ function safeFilePart(value: string): string {
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   const session = await auth();
   if (!session?.user?.id) return new Response("Non autorisé", { status: 401 });
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const parsedId = letterIdSchema.safeParse(rawId);
+  if (!parsedId.success) return new Response("Lettre introuvable", { status: 404 });
+  const id = parsedId.data;
   const letter = await prisma.coverLetter.findFirst({ where: { id, userId: session.user.id } });
   if (!letter) return new Response("Lettre introuvable", { status: 404 });
   const profile = await prisma.profile.findUnique({ where: { userId: session.user.id }, select: { firstName: true, lastName: true, postName: true, email: true, phone: true, address: true, city: true, country: true } });

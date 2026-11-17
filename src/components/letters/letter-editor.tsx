@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { saveLetterContent } from "@/app/actions/letters";
+import Toast from "@/components/ui/toast";
 import type { LetterPdfData, LetterSender } from "../../../pdf/templates/Letter";
 import LetterPreviewLoader from "@/components/letters/letter-preview-loader";
 
@@ -13,6 +14,7 @@ export default function LetterEditor({ letter: initialLetter, sender }: { letter
   const [content, setContent] = useState(initialLetter.content);
   const [status, setStatus] = useState("Tous les changements sont enregistrés.");
   const [isDownloading, setIsDownloading] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const latestContent = useRef(content);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const router = useRouter();
@@ -23,6 +25,7 @@ export default function LetterEditor({ letter: initialLetter, sender }: { letter
     setStatus("Enregistrement…");
     const current = saveQueue.current.then(async () => {
       const result = await saveLetterContent(initialLetter.id, value);
+      setSaveError(result.success ? "" : result.message);
       if (latestContent.current === value) setStatus(result.success ? "Tous les changements sont enregistrés." : result.message);
       return result.success;
     });
@@ -51,6 +54,7 @@ export default function LetterEditor({ letter: initialLetter, sender }: { letter
 
   const previewLetter = { ...initialLetter, content };
   return <section className="space-y-5">
+    {saveError ? <Toast message={saveError} onDismiss={() => setSaveError("")} /> : null}
     <header className="flex flex-wrap items-end justify-between gap-3">
       <div><Link href="/letters" className="text-sm font-medium text-[#49634e] hover:underline">← Mes lettres</Link><h1 className="mt-2 text-2xl font-semibold">{initialLetter.title}</h1><p role="status" className="mt-1 text-xs text-[#737b73]">{status}</p></div>
       <button type="button" disabled={isDownloading} onClick={() => void download()} className="inline-flex min-h-10 items-center rounded-lg bg-[#285c46] px-4 text-sm font-semibold text-white hover:bg-[#214c39] disabled:opacity-60">{isDownloading ? "Préparation…" : "Télécharger en PDF"}</button>

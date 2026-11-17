@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import LetterEditor from "@/components/letters/letter-editor";
 import { prisma } from "@/lib/prisma";
 
 export const instant = false;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const session = await auth();
+  if (!session?.user?.id) return { title: "Ma lettre" };
+  const { id } = await params;
+  const letter = await prisma.coverLetter.findFirst({ where: { id, userId: session.user.id }, select: { title: true } });
+  return { title: letter?.title ?? "Ma lettre" };
+}
 
 export default async function LetterEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { generateAndCreateLetter } from "@/app/actions/letters";
+import Toast from "@/components/ui/toast";
 import { generateLetterSchema } from "@/lib/validations/letters";
 import type { GenerateLetterInput } from "@/lib/validations/letters";
 
@@ -58,7 +59,7 @@ export default function NewLetterForm({ skills }: { skills: SkillOption[] }) {
         {errors.skillIds && <span className="mt-2 block text-xs text-[#a34d43]">{errors.skillIds.message}</span>}
       </fieldset>
 
-      {serverMessage && <p role="alert" className="text-sm text-[#a34d43]">{serverMessage}</p>}
+      {serverMessage ? <Toast message={serverMessage} onDismiss={() => setServerMessage("")} /> : null}
       <button type="submit" disabled={isSubmitting || skills.length < 3} className="inline-flex min-h-11 items-center rounded-lg bg-[#285c46] px-5 text-sm font-semibold text-white hover:bg-[#214c39] disabled:cursor-not-allowed disabled:opacity-55">{isSubmitting ? "Génération…" : "Générer la lettre"}</button>
     </form>
   );

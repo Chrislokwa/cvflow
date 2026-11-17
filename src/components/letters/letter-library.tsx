@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteLetter, duplicateLetter } from "@/app/actions/letters";
+import Toast from "@/components/ui/toast";
 
 export type LetterLibraryItem = {
   id: string;
@@ -21,18 +22,18 @@ const toneLabels: Record<string, string> = { FORMAL: "Formel", PROFESSIONAL: "Pr
 export default function LetterLibrary({ items }: { items: LetterLibraryItem[] }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState("");
-  const [message, setMessage] = useState("");
+  const [notification, setNotification] = useState<{ message: string; tone: "error" | "success" } | null>(null);
 
   async function duplicate(id: string) {
     setBusyId(id);
     const result = await duplicateLetter(id);
     setBusyId("");
     if (!result.success) {
-      setMessage(result.message);
+      setNotification({ message: result.message, tone: "error" });
       return;
     }
     if (!result.id) {
-      setMessage("La lettre n’a pas pu être dupliquée.");
+      setNotification({ message: "La lettre n’a pas pu être dupliquée.", tone: "error" });
       return;
     }
     router.push(`/letters/${result.id}`);
@@ -44,7 +45,7 @@ export default function LetterLibrary({ items }: { items: LetterLibraryItem[] })
     setBusyId(item.id);
     const result = await deleteLetter(item.id);
     setBusyId("");
-    setMessage(result.success ? "La lettre a été supprimée." : result.message);
+    setNotification(result.success ? { message: "La lettre a été supprimée.", tone: "success" } : { message: result.message, tone: "error" });
     if (result.success) router.refresh();
   }
 
@@ -54,7 +55,7 @@ export default function LetterLibrary({ items }: { items: LetterLibraryItem[] })
         <div><p className="text-sm font-medium text-[#6b876d]">Mes documents</p><h1 className="mt-2 text-3xl font-medium tracking-[-0.04em]">Mes lettres</h1><p className="mt-2 text-sm text-[#737b73]">Créez une lettre adaptée à chaque candidature.</p></div>
         <Link href="/letters/new" className="inline-flex min-h-11 items-center rounded-lg bg-[#285c46] px-4 text-sm font-semibold text-white transition hover:bg-[#214c39]">Créer une lettre</Link>
       </header>
-      <p role="status" className="text-sm text-[#647165]">{message}</p>
+      {notification ? <Toast message={notification.message} tone={notification.tone} onDismiss={() => setNotification(null)} /> : null}
       {items.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[#cbd5c9] bg-white px-6 py-12 text-center"><p className="font-medium">Aucune lettre pour le moment</p><p className="mt-2 text-sm text-[#737b73]">Créez votre première lettre à partir de votre profil.</p><Link href="/letters/new" className="mt-5 inline-flex min-h-10 items-center rounded-lg border border-[#285c46] px-4 text-sm font-semibold text-[#285c46]">Créer ma première lettre</Link></div>
       ) : (

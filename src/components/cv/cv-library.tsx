@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { createCv, deleteCv, duplicateCv, renameCv } from "@/app/actions/cvs";
 import { cvTemplateNames } from "@/lib/validations/cv-settings";
 import type { CvTemplateKey } from "@/lib/validations/cv-settings";
+import Toast from "@/components/ui/toast";
 
 export type CvLibraryItem = { id: string; title: string; template: CvTemplateKey; updatedAt: string };
 
@@ -15,14 +16,14 @@ export default function CvLibrary({ items }: { items: CvLibraryItem[] }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [template, setTemplate] = useState<CvTemplateKey>("CLASSIC");
-  const [message, setMessage] = useState("");
+  const [notification, setNotification] = useState<{ message: string; tone: "error" | "success" } | null>(null);
   const [pending, startTransition] = useTransition();
 
   function handleCreate() {
     startTransition(async () => {
       const result = await createCv({ title, template });
       if (!result.success || !result.id) {
-        setMessage(result.success ? "Impossible d’ouvrir ce CV." : result.message);
+        setNotification({ message: result.success ? "Impossible d’ouvrir ce CV." : result.message, tone: "error" });
         return;
       }
       router.push(`/cvs/${result.id}`);
@@ -34,7 +35,7 @@ export default function CvLibrary({ items }: { items: CvLibraryItem[] }) {
     if (!nextTitle || nextTitle.trim() === item.title) return;
     startTransition(async () => {
       const result = await renameCv(item.id, nextTitle);
-      setMessage(result.success ? "Le titre a été modifié." : result.message);
+      setNotification(result.success ? { message: "Le titre a été modifié.", tone: "success" } : { message: result.message, tone: "error" });
       if (result.success) router.refresh();
     });
   }
@@ -43,7 +44,7 @@ export default function CvLibrary({ items }: { items: CvLibraryItem[] }) {
     startTransition(async () => {
       const result = await duplicateCv(item.id);
       if (!result.success || !result.id) {
-        setMessage(result.success ? "Impossible de dupliquer ce CV." : result.message);
+        setNotification({ message: result.success ? "Impossible de dupliquer ce CV." : result.message, tone: "error" });
         return;
       }
       router.push(`/cvs/${result.id}`);
@@ -54,14 +55,14 @@ export default function CvLibrary({ items }: { items: CvLibraryItem[] }) {
     if (!window.confirm(`Supprimer « ${item.title} » ? Cette action est définitive.`)) return;
     startTransition(async () => {
       const result = await deleteCv(item.id);
-      setMessage(result.success ? "Le CV a été supprimé." : result.message);
+      setNotification(result.success ? { message: "Le CV a été supprimé.", tone: "success" } : { message: result.message, tone: "error" });
       if (result.success) router.refresh();
     });
   }
 
   return (
     <div className="space-y-6">
-      {message ? <p role="status" className="rounded-lg bg-[#edf4fa] px-4 py-3 text-sm text-[#315d86]">{message}</p> : null}
+      {notification ? <Toast message={notification.message} tone={notification.tone} onDismiss={() => setNotification(null)} /> : null}
       <section className="rounded-2xl border border-[#e5e9e2] bg-white p-5 shadow-sm sm:p-7">
         <h2 className="text-lg font-semibold">Créer un CV</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_200px_auto]">

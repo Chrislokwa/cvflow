@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { saveCvSettings } from "@/app/actions/cvs";
 import type { CvProfileData } from "@/lib/cv-data";
 import type { CvSection, CvSettings } from "@/lib/validations/cv-settings";
+import Toast from "@/components/ui/toast";
 import CvPreviewLoader from "./cv-preview-loader";
 
 const sectionLabels: Record<CvSection, string> = {
@@ -25,6 +26,7 @@ const accentPresets = ["#2869a7", "#285c46", "#714c8a", "#a34842", "#b27630", "#
 export default function CvEditor({ id, title, profile, initialSettings }: { id: string; title: string; profile: CvProfileData; initialSettings: CvSettings }) {
   const [settings, setSettings] = useState(initialSettings);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [saveMessage, setSaveMessage] = useState("Tous les changements sont enregistrés.");
   const router = useRouter();
   const savedSettings = useRef(JSON.stringify(initialSettings));
@@ -38,6 +40,7 @@ export default function CvEditor({ id, title, profile, initialSettings }: { id: 
     queuedSettings.current = serialized;
     const task = saveQueue.current.then(async () => {
       const result = await saveCvSettings(id, snapshot);
+      setSaveError(result.success ? "" : result.message);
       if (result.success) savedSettings.current = serialized;
       else if (queuedSettings.current === serialized) queuedSettings.current = savedSettings.current;
       if (JSON.stringify(latestSettings.current) === serialized) setSaveMessage(result.success ? "Tous les changements sont enregistrés." : result.message);
@@ -103,6 +106,7 @@ export default function CvEditor({ id, title, profile, initialSettings }: { id: 
 
   return (
     <div>
+      {saveError ? <Toast message={saveError} onDismiss={() => setSaveError("")} /> : null}
       <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div><Link href="/cvs" className="text-sm font-medium text-[#49634e] hover:underline">← Mes CV</Link><h1 className="mt-2 text-2xl font-semibold">{title}</h1><p role="status" className="mt-1 text-xs text-[#737b73]">{saveMessage}</p></div>
         <button type="button" disabled={isDownloading} onClick={handleDownload} className="inline-flex min-h-10 items-center rounded-lg bg-[#285c46] px-4 text-sm font-semibold text-white hover:bg-[#214c39] disabled:opacity-60">{isDownloading ? "Préparation…" : "Télécharger en PDF"}</button>

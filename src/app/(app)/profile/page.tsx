@@ -13,7 +13,7 @@ import type { ProfileItemKind } from "@/lib/validations/profile-sections";
 import { languageLevels } from "@/lib/validations/profile-sections";
 
 export const metadata: Metadata = {
-  title: "Mon profil — CVFlow",
+  title: "Mon profil",
 };
 
 export const instant = false;

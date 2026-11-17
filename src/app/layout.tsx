@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CVFlow — Votre prochain chapitre",
+  title: { default: "CVFlow — Votre prochain chapitre", template: "%s | CVFlow" },
   description: "Créez un CV et une lettre de motivation qui vous ressemblent.",
 };
 

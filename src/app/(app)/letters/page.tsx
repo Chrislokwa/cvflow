@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import LetterLibrary from "@/components/letters/letter-library";
@@ -5,6 +6,7 @@ import type { LetterLibraryItem } from "@/components/letters/letter-library";
 import { prisma } from "@/lib/prisma";
 
 export const instant = false;
+export const metadata: Metadata = { title: "Mes lettres", description: "Créez et gérez vos lettres de motivation." };
 
 export default async function LettersPage() {
   const session = await auth();

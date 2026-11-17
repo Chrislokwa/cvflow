@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
-  title: "Connexion — CVFlow",
+  title: "Connexion",
 };
 
 export default function LoginPage() {

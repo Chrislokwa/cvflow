@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import CvLibrary from "@/components/cv/cv-library";
@@ -5,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import type { CvLibraryItem } from "@/components/cv/cv-library";
 
 export const instant = false;
+export const metadata: Metadata = { title: "Mes CV", description: "Créez et gérez vos CV." };
 
 export default async function CvsPage() {
   const session = await auth();
