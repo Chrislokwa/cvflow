@@ -2,7 +2,7 @@
 
 CVFlow est une application web de création de CV et de lettres de motivation. Son objectif est d’aider chaque personne à organiser son parcours, préparer des candidatures adaptées et exporter des documents professionnels.
 
-> **État du projet :** le socle technique, la page d’accueil, le schéma de données et l’authentification sont en place. Le tableau de bord et les pages Profil, Mes CV et Mes lettres sont des espaces provisoires. La gestion du profil, l’édition des documents et la génération PDF restent à implémenter.
+> **État du projet :** le socle technique, l’authentification et la section Identité du profil sont en place. Les autres onglets du profil, le tableau de bord, Mes CV et Mes lettres restent provisoires. L’édition des documents et la génération PDF restent à implémenter.
 
 ## Sommaire
 
@@ -27,12 +27,14 @@ Les fonctionnalités déjà disponibles :
 - Mots de passe hachés avec bcryptjs.
 - Création automatique d’un profil vide lors de l’inscription.
 - Protection des pages privées et redirection vers la connexion.
-- Tableau de bord provisoire et navigation de l’espace connecté.
+- Formulaire Identité avec validation, sauvegarde et préremplissage depuis la base de données.
+- Réduction et stockage facultatif de la photo de profil.
+- Navigation de l’espace connecté et onglets de profil en préparation.
 
 Les fonctionnalités prévues :
 
 - Espace personnel pour consulter et gérer ses documents.
-- Profil réutilisable contenant les coordonnées, le résumé, les expériences, les formations, les compétences, les langues, les projets, les certifications et les centres d’intérêt.
+- Profil réutilisable contenant les coordonnées, le résumé, les expériences, les formations, les compétences, les langues, les projets, les certifications et les centres d’intérêt. La section Identité est disponible ; les autres sections restent à réaliser.
 - Création et modification de plusieurs CV par utilisateur.
 - Choix de modèles de CV et réglages de présentation.
 - Prévisualisation et export des CV en PDF.
@@ -180,7 +182,7 @@ Les étapes prévues, dans l’ordre général, sont :
 
 1. **Socle et base de données** — projet Next.js, design initial, schéma Prisma et migration de départ. _(Réalisé.)_
 2. **Authentification** — inscription, connexion et déconnexion avec Auth.js Credentials, mots de passe hachés et sessions JWT. _(Réalisé.)_
-3. **Profil professionnel** — formulaires validés et gestion des informations personnelles, expériences, formations et éléments complémentaires.
+3. **Profil professionnel** — section Identité réalisée ; formulaires et gestion des expériences, formations et éléments complémentaires à réaliser.
 4. **Gestion des CV** — création, édition, suppression, choix de modèle et réglages.
 5. **Génération des PDF** — prévisualisation et téléchargement des CV.
 6. **Lettres de motivation** — création, édition, organisation et export PDF.
