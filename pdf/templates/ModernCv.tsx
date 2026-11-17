@@ -8,10 +8,10 @@ type Props = { profile: CvProfileData; settings: CvSettings };
 
 const styles = StyleSheet.create({
   page: { padding: 0, fontSize: 9, lineHeight: 1.42, color: "#26312c" },
-  title: { paddingTop: 28, paddingBottom: 15, textAlign: "center", fontSize: 15, fontWeight: 700, letterSpacing: 1.1 },
+  title: { paddingBottom: 15, textAlign: "center", fontSize: 15, fontWeight: 700, letterSpacing: 1.1 },
   columns: { flexDirection: "row", flexGrow: 1, alignItems: "stretch" },
   sidebar: { width: 185, paddingHorizontal: 22, paddingTop: 22, paddingBottom: 34, color: "#fff" },
-  main: { flexGrow: 1, flexShrink: 1, paddingHorizontal: 30, paddingTop: 22, paddingBottom: 36 },
+  main: { flexGrow: 1, flexShrink: 1, paddingHorizontal: 30, paddingTop: 28, paddingBottom: 36 },
   name: { fontSize: 18, fontWeight: 700, lineHeight: 1.2 },
   role: { marginTop: 5, fontSize: 10, opacity: 0.9 },
   photo: { width: 74, height: 74, marginBottom: 12, borderRadius: 37, objectFit: "cover" },
@@ -92,10 +92,12 @@ export default function ModernCv({ profile, settings }: Props): ReactElement<Doc
   };
 
   return <Document title={`Curriculum Vitae ${name}`} author={name}><Page size="A4" style={[styles.page, { fontFamily }]} wrap>
-    <Text style={[styles.title, { color: settings.accentColor }]}>CURRICULUM VITAE</Text>
     <View style={styles.columns}>
       <View style={[styles.sidebar, { backgroundColor: settings.accentColor }]}>{sideSections.map((section) => section === "identity" ? <View key={section}>{sidebarContent[section]}</View> : <SidebarSection key={section} title={getTitle(section)} color="#fff">{sidebarContent[section]}</SidebarSection>)}</View>
-      <View style={styles.main}>{mainSections.map((section) => <MainSection key={section} title={getTitle(section)} accent={settings.accentColor}>{mainContent[section]}</MainSection>)}</View>
+      <View style={styles.main}>
+        <Text style={[styles.title, { color: settings.accentColor }]}>CURRICULUM VITAE</Text>
+        {mainSections.map((section) => <MainSection key={section} title={getTitle(section)} accent={settings.accentColor}>{mainContent[section]}</MainSection>)}
+      </View>
     </View>
   </Page></Document>;
 }
