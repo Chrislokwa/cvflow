@@ -32,6 +32,16 @@ const photoSchema = z
     return Math.floor((encoded.length * 3) / 4) - padding <= 300 * 1024;
   }, "La photo doit être une image valide de 300 Ko maximum.");
 
+const optionalDate = z
+  .string()
+  .trim()
+  .max(10, "La date saisie est invalide.")
+  .refine((value) => {
+    if (!value) return true;
+    const timestamp = Date.parse(`${value}T00:00:00.000Z`);
+    return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === value;
+  }, "Saisissez une date valide.");
+
 export const profileSchema = z.object({
   firstName: z
     .string()
@@ -56,6 +66,7 @@ export const profileSchema = z.object({
     .string()
     .trim()
     .max(40, "Le numéro ne peut pas dépasser 40 caractères."),
+  address: z.string().trim().max(255, "L’adresse ne peut pas dépasser 255 caractères."),
   city: z
     .string()
     .trim()
@@ -64,9 +75,13 @@ export const profileSchema = z.object({
     .string()
     .trim()
     .max(100, "Le pays ne peut pas dépasser 100 caractères."),
+  birthDate: optionalDate,
+  maritalStatus: z.string().trim().max(80, "La valeur est trop longue."),
+  gender: z.string().trim().max(80, "La valeur est trop longue."),
+  nationality: z.string().trim().max(100, "La nationalité ne peut pas dépasser 100 caractères."),
   website: optionalHttpUrl,
   linkedin: optionalHttpUrl,
-  github: optionalHttpUrl,
+  otherLink: optionalHttpUrl,
   summary: z
     .string()
     .trim()

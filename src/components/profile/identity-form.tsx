@@ -16,11 +16,16 @@ const profileFields = [
   "title",
   "email",
   "phone",
+  "address",
   "city",
   "country",
+  "birthDate",
+  "maritalStatus",
+  "gender",
+  "nationality",
   "website",
   "linkedin",
-  "github",
+  "otherLink",
   "summary",
   "photo",
 ] as const satisfies readonly (keyof ProfileInput)[];
@@ -243,7 +248,7 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
               Informations personnelles
             </h2>
             <p className="mt-1 text-sm text-[#7b837b]">
-              Ces informations apparaîtront dans vos futurs CV.
+              Les informations personnelles sont facultatives. Seules celles que vous renseignez apparaîtront dans le CV.
             </p>
           </div>
 
@@ -354,6 +359,11 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
                 <FieldMessage>{errors.phone.message}</FieldMessage>
               )}
             </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="address" className="text-sm font-medium text-[#303a32]">Adresse</label>
+              <input {...register("address")} id="address" autoComplete="street-address" className={inputClassName} aria-invalid={Boolean(errors.address)} />
+              {errors.address && <FieldMessage>{errors.address.message}</FieldMessage>}
+            </div>
             <div>
               <label
                 htmlFor="city"
@@ -391,11 +401,31 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
               )}
             </div>
             <div>
+              <label htmlFor="birthDate" className="text-sm font-medium text-[#303a32]">Date de naissance <span className="font-normal text-[#858d85]">(facultative)</span></label>
+              <input {...register("birthDate")} id="birthDate" type="date" autoComplete="bday" className={inputClassName} aria-invalid={Boolean(errors.birthDate)} />
+              {errors.birthDate && <FieldMessage>{errors.birthDate.message}</FieldMessage>}
+            </div>
+            <div>
+              <label htmlFor="nationality" className="text-sm font-medium text-[#303a32]">Nationalité <span className="font-normal text-[#858d85]">(facultative)</span></label>
+              <input {...register("nationality")} id="nationality" autoComplete="nationality" className={inputClassName} aria-invalid={Boolean(errors.nationality)} />
+              {errors.nationality && <FieldMessage>{errors.nationality.message}</FieldMessage>}
+            </div>
+            <div>
+              <label htmlFor="maritalStatus" className="text-sm font-medium text-[#303a32]">État civil <span className="font-normal text-[#858d85]">(facultatif)</span></label>
+              <input {...register("maritalStatus")} id="maritalStatus" className={inputClassName} placeholder="Ex. célibataire, mariée" aria-invalid={Boolean(errors.maritalStatus)} />
+              {errors.maritalStatus && <FieldMessage>{errors.maritalStatus.message}</FieldMessage>}
+            </div>
+            <div>
+              <label htmlFor="gender" className="text-sm font-medium text-[#303a32]">Sexe ou genre <span className="font-normal text-[#858d85]">(facultatif)</span></label>
+              <input {...register("gender")} id="gender" className={inputClassName} aria-invalid={Boolean(errors.gender)} />
+              {errors.gender && <FieldMessage>{errors.gender.message}</FieldMessage>}
+            </div>
+            <div>
               <label
                 htmlFor="website"
                 className="text-sm font-medium text-[#303a32]"
               >
-                Site web
+                Site web ou portfolio <span className="font-normal text-[#858d85]">(facultatif)</span>
               </label>
               <input
                 {...register("website")}
@@ -415,7 +445,7 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
                 htmlFor="linkedin"
                 className="text-sm font-medium text-[#303a32]"
               >
-                LinkedIn
+                Profil professionnel (LinkedIn, etc.) <span className="font-normal text-[#858d85]">(facultatif)</span>
               </label>
               <input
                 {...register("linkedin")}
@@ -431,21 +461,21 @@ export function IdentityForm({ initialValues }: IdentityFormProps) {
             </div>
             <div className="sm:col-span-2">
               <label
-                htmlFor="github"
+                htmlFor="otherLink"
                 className="text-sm font-medium text-[#303a32]"
               >
-                GitHub
+                Autre lien professionnel <span className="font-normal text-[#858d85]">(facultatif)</span>
               </label>
               <input
-                {...register("github")}
-                id="github"
+                {...register("otherLink")}
+                id="otherLink"
                 type="url"
                 className={inputClassName}
-                placeholder="https://github.com/votre-identifiant"
-                aria-invalid={Boolean(errors.github)}
+                placeholder="Ex. GitHub, portfolio, site de réalisations"
+                aria-invalid={Boolean(errors.otherLink)}
               />
-              {errors.github && (
-                <FieldMessage>{errors.github.message}</FieldMessage>
+              {errors.otherLink && (
+                <FieldMessage>{errors.otherLink.message}</FieldMessage>
               )}
             </div>
           </div>

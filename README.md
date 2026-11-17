@@ -27,13 +27,15 @@ Les fonctionnalités déjà disponibles :
 - Mots de passe hachés avec bcryptjs.
 - Création automatique d’un profil vide lors de l’inscription.
 - Protection des pages privées et redirection vers la connexion.
-- Formulaire Identité avec validation, sauvegarde et préremplissage depuis la base de données.
+- Formulaire Identité avec validation, sauvegarde et préremplissage depuis la base de données, y compris les renseignements personnels facultatifs.
 - Réduction et stockage facultatif de la photo de profil.
 - Gestion des formations, expériences, compétences, langues, projets, certifications et centres d’intérêt.
 - Réorganisation des éléments du profil et confirmation avant suppression.
 - Vérification côté serveur de la propriété du profil et des éléments associés.
 - Aperçu A4 du modèle classique à partir du profil connecté.
 - Téléchargement PDF protégé, avec les polices Roboto et Lora embarquées localement.
+- Présentation classique inspirée du CV joint, avec rubriques numérotées et accent bleu.
+- Liens professionnels génériques et facultatifs (site, portfolio, LinkedIn, GitHub ou autre).
 
 Les fonctionnalités prévues :
 

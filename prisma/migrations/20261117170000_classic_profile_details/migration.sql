@@ -1,0 +1,8 @@
+ALTER TABLE "Profile"
+  ADD COLUMN "address" TEXT NOT NULL DEFAULT '',
+  ADD COLUMN "birthDate" TIMESTAMP(3),
+  ADD COLUMN "maritalStatus" TEXT NOT NULL DEFAULT '',
+  ADD COLUMN "gender" TEXT NOT NULL DEFAULT '',
+  ADD COLUMN "nationality" TEXT NOT NULL DEFAULT '';
+
+ALTER TABLE "Profile" RENAME COLUMN "github" TO "otherLink";

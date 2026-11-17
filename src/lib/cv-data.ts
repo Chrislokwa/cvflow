@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-export const defaultCvSettings = { accentColor: "#285c46" } as const;
+export const defaultCvSettings = { accentColor: "#2869a7" } as const;
 
 export type CvProfileData = {
   firstName: string;
@@ -8,11 +8,16 @@ export type CvProfileData = {
   title: string;
   email: string;
   phone: string;
+  address: string;
   city: string;
   country: string;
+  birthDate: string | null;
+  maritalStatus: string;
+  gender: string;
+  nationality: string;
   website: string;
   linkedin: string;
-  github: string;
+  otherLink: string;
   summary: string;
   photo: string;
   interests: string[];
@@ -51,8 +56,9 @@ export async function loadCvProfile(userId: string): Promise<CvProfileData | nul
 
   return {
     firstName: profile.firstName, lastName: profile.lastName, title: profile.title,
-    email: profile.email, phone: profile.phone, city: profile.city, country: profile.country,
-    website: profile.website, linkedin: profile.linkedin, github: profile.github,
+    email: profile.email, phone: profile.phone, address: profile.address, city: profile.city, country: profile.country,
+    birthDate: dateValue(profile.birthDate), maritalStatus: profile.maritalStatus, gender: profile.gender,
+    nationality: profile.nationality, website: profile.website, linkedin: profile.linkedin, otherLink: profile.otherLink,
     summary: profile.summary, photo: profile.photo, interests: profile.interests,
     experiences: profile.experiences.map((item) => ({
       position: item.position, company: item.company, city: item.city,

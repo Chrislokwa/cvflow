@@ -44,13 +44,18 @@ export async function saveProfile(
 
   try {
     const data = parsedInput.data;
+    const { birthDate, ...textData } = data;
+    const profileData = {
+      ...textData,
+      birthDate: birthDate ? new Date(`${birthDate}T00:00:00.000Z`) : null,
+    };
     await prisma.profile.upsert({
       where: { userId: session.user.id },
       create: {
-        ...data,
+        ...profileData,
         user: { connect: { id: session.user.id } },
       },
-      update: data,
+      update: profileData,
       select: { id: true },
     });
 
