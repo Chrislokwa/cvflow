@@ -1,9 +1,11 @@
 import { Document, Page, Path, StyleSheet, Svg, Text, View } from "@react-pdf/renderer";
 import type { DocumentProps } from "@react-pdf/renderer";
+import type { CoverLetterType } from "@prisma/client";
 import type { ReactElement } from "react";
 
 export type LetterPdfData = {
   title: string;
+  type: CoverLetterType;
   company: string;
   position: string;
   recruiterName: string;
@@ -24,6 +26,13 @@ export type LetterSender = {
 };
 
 const accent = "#34396f";
+const subjectLabels: Record<CoverLetterType, string> = {
+  APPLICATION: "Candidature au poste de",
+  INTERNSHIP: "Candidature à un stage de",
+  UNSOLICITED: "Candidature spontanée au poste de",
+  INTERNSHIP_UNSOLICITED: "Candidature spontanée à un stage de",
+  FOLLOW_UP: "Relance concernant le poste de",
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -64,7 +73,7 @@ export default function Letter({ letter, sender }: { letter: LetterPdfData; send
   const senderLocation = [sender.address, [sender.city, sender.country].filter(Boolean).join(", ")].filter(Boolean);
   const signature = fullName(sender);
   const subject = letter.position
-    ? `Objet : Candidature au poste de ${letter.position}`
+    ? `Objet : ${subjectLabels[letter.type]} ${letter.position}`
     : `Objet : ${letter.title}`;
 
   return <Document title={letter.title} author={signature}>

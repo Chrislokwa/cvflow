@@ -23,5 +23,5 @@ export default async function LetterEditorPage({ params }: { params: Promise<{ i
   const profile = await prisma.profile.findUnique({ where: { userId: session.user.id }, select: { firstName: true, lastName: true, postName: true, email: true, phone: true, address: true, city: true, country: true } });
   if (!profile) notFound();
 
-  return <LetterEditor letter={{ id: letter.id, title: letter.title, company: letter.company, position: letter.position, recruiterName: letter.recruiterName, city: letter.city, createdAt: letter.createdAt.toISOString(), content: letter.content }} sender={profile} />;
+  return <LetterEditor letter={{ id: letter.id, type: letter.type, title: letter.title, company: letter.company, position: letter.position, recruiterName: letter.recruiterName, city: letter.city, createdAt: letter.createdAt.toISOString(), content: letter.content }} sender={profile} />;
 }

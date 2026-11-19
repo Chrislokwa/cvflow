@@ -16,7 +16,7 @@ export type LetterLibraryItem = {
   updatedAt: string;
 };
 
-const typeLabels: Record<string, string> = { APPLICATION: "Emploi", INTERNSHIP: "Stage", UNSOLICITED: "Candidature spontanée", FOLLOW_UP: "Relance" };
+const typeLabels: Record<string, string> = { APPLICATION: "Emploi", INTERNSHIP: "Stage", UNSOLICITED: "Candidature spontanée", INTERNSHIP_UNSOLICITED: "Stage spontané", FOLLOW_UP: "Relance" };
 const toneLabels: Record<string, string> = { FORMAL: "Formel", PROFESSIONAL: "Professionnel", FRIENDLY: "Amical", DYNAMIC: "Dynamique", ACADEMIC: "Académique" };
 
 export default function LetterLibrary({ items }: { items: LetterLibraryItem[] }) {

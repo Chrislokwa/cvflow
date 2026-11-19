@@ -20,6 +20,7 @@ enum CoverLetterType {
   UNSOLICITED
   FOLLOW_UP
   INTERNSHIP
+  INTERNSHIP_UNSOLICITED
 }
 
 enum CoverLetterTone {

@@ -7,17 +7,17 @@ import { useForm } from "react-hook-form";
 import { generateAndCreateLetter } from "@/app/actions/letters";
 import Toast from "@/components/ui/toast";
 import { generateLetterSchema } from "@/lib/validations/letters";
-import type { GenerateLetterInput } from "@/lib/validations/letters";
+import type { GenerateLetterInput, LetterType } from "@/lib/validations/letters";
 
 type SkillOption = { id: string; name: string; category: string };
 const inputClass = "mt-1.5 h-11 w-full rounded-lg border border-[#dce2da] bg-white px-3 text-sm outline-none focus:border-[#6b9272] focus:ring-3 focus:ring-[#6b9272]/15";
 
-export default function NewLetterForm({ skills }: { skills: SkillOption[] }) {
+export default function NewLetterForm({ skills, initialType }: { skills: SkillOption[]; initialType?: LetterType }) {
   const router = useRouter();
   const [serverMessage, setServerMessage] = useState("");
   const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<GenerateLetterInput>({
     resolver: zodResolver(generateLetterSchema),
-    defaultValues: { type: "APPLICATION", tone: "FORMAL", position: "", company: "", recruiterName: "", city: "", motivation: "", skillIds: [] },
+    defaultValues: { type: initialType ?? "APPLICATION", tone: "FORMAL", position: "", company: "", recruiterName: "", city: "", motivation: "", skillIds: [] },
   });
   const skillIds = watch("skillIds");
 
@@ -43,7 +43,7 @@ export default function NewLetterForm({ skills }: { skills: SkillOption[] }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-2xl border border-[#e5e9e2] bg-white p-5 shadow-sm sm:p-8">
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className="text-sm font-semibold">Type de candidature<select {...register("type")} className={inputClass}><option value="APPLICATION">Emploi</option><option value="INTERNSHIP">Stage</option><option value="UNSOLICITED">Candidature spontanée</option></select></label>
+        <label className="text-sm font-semibold">Type de candidature<select {...register("type")} className={inputClass}><option value="APPLICATION">Emploi</option><option value="INTERNSHIP">Stage</option><option value="UNSOLICITED">Candidature spontanée</option><option value="INTERNSHIP_UNSOLICITED">Stage – candidature spontanée</option></select></label>
         <label className="text-sm font-semibold">Ton<select {...register("tone")} className={inputClass}><option value="FORMAL">Formel</option><option value="DYNAMIC">Dynamique</option><option value="ACADEMIC">Académique</option></select></label>
         <label className="text-sm font-semibold">Poste visé<input {...register("position")} className={inputClass} placeholder="Ex. Assistant comptable" />{errors.position && <span className="mt-1 block text-xs text-[#a34d43]">{errors.position.message}</span>}</label>
         <label className="text-sm font-semibold">Entreprise<input {...register("company")} className={inputClass} placeholder="Nom de l’entreprise" />{errors.company && <span className="mt-1 block text-xs text-[#a34d43]">{errors.company.message}</span>}</label>

@@ -37,7 +37,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     merriweatherBold: join(process.cwd(), "public", "fonts", "Merriweather-Bold.woff"),
   });
 
-  const pdfData: LetterPdfData = { title: letter.title, company: letter.company, position: letter.position, recruiterName: letter.recruiterName, city: letter.city, createdAt: letter.createdAt.toISOString(), content: letter.content };
+  const pdfData: LetterPdfData = { title: letter.title, type: letter.type, company: letter.company, position: letter.position, recruiterName: letter.recruiterName, city: letter.city, createdAt: letter.createdAt.toISOString(), content: letter.content };
   const sender: LetterSender = profile;
   const document = createElement(Letter, { letter: pdfData, sender }) as ReactElement<DocumentProps>;
   const pdf = await renderToBuffer(document);

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const letterTypeSchema = z.enum(["APPLICATION", "INTERNSHIP", "UNSOLICITED"]);
+export const letterTypeSchema = z.enum(["APPLICATION", "INTERNSHIP", "UNSOLICITED", "INTERNSHIP_UNSOLICITED"]);
 export const letterToneSchema = z.enum(["FORMAL", "DYNAMIC", "ACADEMIC"]);
 
 const optionalText = (max: number) => z.string().trim().max(max);
@@ -30,6 +30,7 @@ export const letterTypeLabels: Record<LetterType, string> = {
   APPLICATION: "Emploi",
   INTERNSHIP: "Stage",
   UNSOLICITED: "Candidature spontanée",
+  INTERNSHIP_UNSOLICITED: "Stage – candidature spontanée",
 };
 
 export const letterToneLabels: Record<LetterTone, string> = {

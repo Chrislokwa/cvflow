@@ -85,6 +85,38 @@ export const letterTemplates: TemplateSet = {
       closing: "Je me tiens à votre disposition pour toute précision et vous prie d’agréer, {{recruteur}}, mes salutations distinguées.",
     },
   },
+  INTERNSHIP_UNSOLICITED: {
+    FORMAL: {
+      openings: [
+        "Actuellement en formation en {{formation}}, je vous adresse ma candidature spontanée pour un stage de {{poste}} au sein de {{entreprise}}.",
+        "Dans le cadre de mes études en {{formation}}, je souhaite effectuer un stage de {{poste}} et vous propose ma candidature spontanée auprès de {{entreprise}}.",
+      ],
+      journey: "Ma formation en {{formation}} m’a donné des bases que je souhaite mettre en pratique. {{experience}}",
+      skills: "Mes compétences en {{competences}} me permettraient de contribuer aux missions confiées avec sérieux, tout en continuant à apprendre au contact de vos équipes.",
+      company: "L’activité de {{entreprise}} correspond à mon intérêt pour le domaine et à mon projet de formation. {{motivation}}",
+      closing: "Je serais heureux de pouvoir vous rencontrer afin d’échanger sur ma demande de stage et vous prie d’agréer, {{recruteur}}, l’expression de mes salutations distinguées.",
+    },
+    DYNAMIC: {
+      openings: [
+        "En formation en {{formation}}, je souhaite passer de la théorie à la pratique et vous propose ma candidature spontanée pour un stage de {{poste}} chez {{entreprise}}.",
+        "Je vous contacte spontanément pour un stage de {{poste}} au sein de {{entreprise}}. Ma formation en {{formation}} m’a donné envie de m’investir sur le terrain.",
+      ],
+      journey: "Mon parcours en {{formation}} m’a préparé à découvrir les réalités du métier. {{experience}}",
+      skills: "Je pourrais mobiliser mes compétences en {{competences}}, ma curiosité et mon envie de prendre part aux missions de votre équipe.",
+      company: "J’aimerais apprendre auprès de {{entreprise}} tout en apportant mon sérieux et mon énergie aux projets en cours. {{motivation}}",
+      closing: "Je serais ravi de vous présenter ma démarche lors d’un entretien et vous adresse, {{recruteur}}, mes salutations respectueuses.",
+    },
+    ACADEMIC: {
+      openings: [
+        "Dans le cadre de ma formation en {{formation}}, je souhaite effectuer un stage de {{poste}} et vous soumets ma candidature spontanée auprès de {{entreprise}}.",
+        "Afin de compléter mon cursus en {{formation}} par une expérience pratique, je vous propose ma candidature pour un stage de {{poste}} au sein de {{entreprise}}.",
+      ],
+      journey: "Ma formation en {{formation}} m’a permis d’acquérir des connaissances que je souhaite confronter aux réalités professionnelles. {{experience}}",
+      skills: "Mes compétences en {{competences}} constituent des acquis que je souhaite approfondir en contribuant avec méthode aux activités de votre structure.",
+      company: "La démarche de {{entreprise}} dans son secteur a retenu mon intérêt et le cadre de votre structure serait formateur pour mon projet. {{motivation}}",
+      closing: "Je reste à votre disposition pour vous exposer plus précisément ma démarche et vous prie d’agréer, {{recruteur}}, mes salutations distinguées.",
+    },
+  },
   UNSOLICITED: {
     FORMAL: {
       openings: [
@@ -134,7 +166,11 @@ export function generateLetterText(
     recruteur: input.recruiterName ? `Madame/Monsieur ${input.recruiterName}` : "Madame, Monsieur",
     competences: data.skills.join(", "),
     formation: data.education || "mon parcours de formation",
-    experience: data.experience || "mes premières expériences professionnelles",
+    experience: input.type === "INTERNSHIP_UNSOLICITED"
+      ? data.experience
+        ? `Mon expérience de ${data.experience} m’a également permis de développer des repères professionnels.`
+        : "Je souhaite désormais développer ces acquis au contact d’une équipe professionnelle."
+      : data.experience || "mes premières expériences professionnelles",
     motivation: input.motivation,
   };
   const opening = template.openings[Math.floor(Math.random() * template.openings.length)] ?? template.openings[0];
